@@ -1,0 +1,76 @@
+{% include 'base.html' %}
+
+{% load recaptcha3 %}
+{% recaptcha_init %}
+{% recaptcha_ready action_name='homepage' %}
+
+{% block head %}
+<style>
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+  }
+
+  .form-signin {
+    max-width: 330px;
+    padding: 15px;
+  }
+
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+</style>
+
+{% endblock head %}
+{% block body %}
+<main class="form-signin w-100 m-auto">
+  {% if Loginform %}
+  <form method="post">
+    {% csrf_token %}
+    <h1 class="h3 mb-3 fw-normal">Войдите или зарегистрируйтесь</h1>
+    <div class="form-floating">
+      {{ Loginform.email }}
+      <label for="floatingInput">Email адрес</label>
+      {{ Loginform.email.errors }}
+
+    </div>
+    <div class="form-floating">
+      {{ Loginform.password }}
+      <label for="floatingPassword">Пароль</label>
+      {{ Loginform.password.errors }}
+
+    </div>
+
+    {{ Loginform.captcha }}
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+    <a href="#" class="float-end py-2">Зарегистрироваться</a>
+    <p class="mt-5 mb-3 text-muted">QyCode Studios © 2023</p>
+  </form>
+  {% else %}
+  <h2 class='text-center'>Добро пожаловать, {{ request.user.username }}!</h2>
+  {% endif %}
+</main>
+{% endblock body %}
+{% block footer %}{% endblock footer %}
+{% block scripts %}{% endblock scripts %}

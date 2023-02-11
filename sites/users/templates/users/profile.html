@@ -1,0 +1,169 @@
+{% load static %}
+{% include 'base.html' %}
+
+{% block head %}
+
+{% endblock head %}
+<link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+{% block body %}
+<section id="content" class="container">
+    <div class="page-heading">
+        <div class="media clearfix">
+          <div class="media-left pr30">
+            <a href="#">
+              <img class="media-object mw150" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="...">
+            </a>
+          </div>
+          <div class="media-body va-m">
+            <h2 class="media-heading">{{ profile.user.username }}
+            </h2>
+            <p class="lead">Lorem ipsum dolor sit amet ctetur adicing elit, sed do eiusmod tempor incididunt</p>
+            <div class="media-links">
+              <ul class="list-inline list-unstyled d-inline-flex">
+                <li class='mx-2'>
+                  <a href="#" title="facebook link">
+                    <span class="fa fa-vk fs35 text-primary"></span>
+                  </a>
+                </li>
+                <li class='mx-2'>
+                  <a href="#" title="phone link">
+                    <span class="fa fa-phone-square fs35 text-info"></span>
+                  </a>
+                </li>
+                <li class='mx-2'>
+                  <a href="#" title="whatsapp plus link">
+                    <span class="fa fa-whatsapp fs35 text-danger"></span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="room-managment">
+                <ul class='list-unstyled d-inline-flex'>
+                    <li class='mx-3'><button>Создать комнату</button></li>
+                    <li class='mx-3'><button>Подключиться к комнате</button></li>
+                </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+          <div class="panel">
+            <div class="panel-heading">
+              <span class="panel-icon">
+                <i class="fa fa-star"></i>
+              </span>
+              <span class="panel-title"> Статистика {{ profile.user.username }}</span>
+            </div>
+            <div class="panel-body pn">
+              <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last">
+                <tbody>
+                  <tr>
+                    <td>
+                      <span class="fa fa-desktop text-warning"></span>
+                    </td>
+                    <td>Сыграно игр</td>
+                    <td>500</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="fa fa-trophy text-primary"></span>
+                    </td>
+                    <td>Выиграно игр</td>
+                    <td>499</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span class="fa fa-clock-o text-info"></span>
+                    </td>
+                    <td>Времени за игрой</td>
+                    <td>23 час 10 минут</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+
+          <div class="tab-block">
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a href="#tab1" data-toggle="tab">Активность</a>
+              </li>
+            </ul>
+            <div class="tab-content p30" style="height: 730px;">
+              <div id="tab1" class="tab-pane active">
+                <div class="media">
+                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
+                  <div class="media-body">
+                    <h5 class="media-heading mb20">Провел игру
+                      <small> - 23 февраля 2023 23:50</small>
+                    </h5>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
+                  </div>
+                </div>
+                <hr>
+                <div class="media">
+                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
+                  <div class="media-body">
+                    <h5 class="media-heading mb20">Участвовал в игре
+                      <small> - 10 февраля 2023 23:50</small>
+                    </h5>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
+                  </div>
+                </div>
+                <hr>
+                <div class="media">
+                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
+                  <div class="media-body">
+                    <h5 class="media-heading mb20">Победил в игре <span class="fa fa-trophy text-warning"></span>
+                      <small> - 5 февраля 2023 23:50</small>
+                    </h5>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
+                  </div>
+                </div>
+                <hr>
+                <div class="media">
+                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
+                  <div class="media-body">
+                    <h5 class="media-heading mb20">Победил в игре <span class="fa fa-trophy text-warning"></span>
+                      <small> - 5 февраля 2023 23:50</small>
+                    </h5>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
+                  </div>
+                </div>
+                <hr>
+                <div class="media">
+                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
+                  <div class="media-body">
+                    <h5 class="media-heading mb20">Победил в игре <span class="fa fa-trophy text-warning"></span>
+                      <small> - 5 февраля 2023 23:50</small>
+                    </h5>
+                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
+                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
+                  </div>
+                </div>
+                <div class="more-media text-center pt-5">
+                    <button>Показать еще</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+{% endblock body %}
+{% block footer %}{% endblock footer %}
+{% block scripts %}{% endblock scripts %}
