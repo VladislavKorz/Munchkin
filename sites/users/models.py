@@ -8,8 +8,14 @@ from datetime import datetime
 from django_ckeditor_5.fields import CKEditor5Field
 
 class Profile(models.Model):
+    GENDER_CHOICES = (
+        ('M', 'Мужской'),
+        ('F', 'Женский'),
+        ('O', 'Не задано'),
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь', related_name="profile")
     photo = models.ImageField("Фото", upload_to="users/profile/photo", blank=True)
+    gender = models.CharField("Пол", max_length = 1, choices = GENDER_CHOICES, default='O')
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
 
@@ -18,8 +24,40 @@ class Profile(models.Model):
         verbose_name_plural='Профиль пользователей'
         verbose_name='Профиль пользователя'
 
+    def get_all_activities(self):
+        def create_elem(room_obj, actions):
+            elem = {
+                'datetime':room_obj.create,
+                'title': actions,
+                'room_id': room_obj.code,
+                'room_url': room_obj.get_absolute_url(),
+                'game_end': room_obj.end,
+                'winner': False,
+                'players': [{
+                    'username': player.player.user.username,
+                    'url': player.player.get_absolute_url(),
+                    'photo': player.player.get_photo_url(),
+                } for player in room_obj.player.all()]
+                }
+            return elem
+
+        activities_list = []
+        for item in self.roomOwner.all():
+            activities_list.append(create_elem(item, 'Начал игру'))
+        for item in self.roomPlayer.all():
+            activities_list.append(create_elem(item.room, 'Участвовал в игре'))
+        activities_list_sort = sorted(activities_list, key=lambda d: d['datetime'], reverse=True) 
+
+        return activities_list_sort
+
     def get_absolute_url(self):
-        return reverse('user-publicProfile', args=[str(self.user.username)])
+        return reverse('profile', args=[str(self.user.username)])
+
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
+        else:
+            return 'https://bootdey.com/img/Content/avatar/avatar7.png'
 
     def __str__(self):
         return str(self.user.username)
@@ -27,7 +65,7 @@ class Profile(models.Model):
 
 class RulesBook(models.Model):
     title = models.CharField("Заголовок", max_length=100)
-    user = models.ForeignKey(Profile, verbose_name="Владелец книги", on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, verbose_name="Владелец книги", on_delete=models.CASCADE, related_name='rulesBook')
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
 

@@ -128,7 +128,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+LOGIN_URL = 'login'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -153,8 +153,6 @@ RECAPTCHA_PRIVATE_KEY = '6Ld0oHAkAAAAALS_niPwwIhaqEaGrghp46GxY1hS'
 RECAPTCHA_PUBLIC_KEY = '6Ld0oHAkAAAAAG5v9lePLn4xwATnmFq4zFvBjqlb'
 RECAPTCHA_DEFAULT_ACTION = 'generic'
 RECAPTCHA_SCORE_THRESHOLD = 0.5
-RECAPTCHA_LANGUAGE = 'ru'
-
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

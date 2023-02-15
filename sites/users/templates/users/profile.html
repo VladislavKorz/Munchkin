@@ -1,169 +1,246 @@
+{% extends 'base.html' %}
 {% load static %}
-{% include 'base.html' %}
 
-{% block head %}
-
-{% endblock head %}
+{% block header %}
 <link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+{% endblock header %}
+
 {% block body %}
 <section id="content" class="container">
-    <div class="page-heading">
-        <div class="media clearfix">
-          <div class="media-left pr30">
-            <a href="#">
-              <img class="media-object mw150" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="...">
-            </a>
-          </div>
-          <div class="media-body va-m">
-            <h2 class="media-heading">{{ profile.user.username }}
-            </h2>
-            <p class="lead">Lorem ipsum dolor sit amet ctetur adicing elit, sed do eiusmod tempor incididunt</p>
-            <div class="media-links">
-              <ul class="list-inline list-unstyled d-inline-flex">
-                <li class='mx-2'>
-                  <a href="#" title="facebook link">
-                    <span class="fa fa-vk fs35 text-primary"></span>
-                  </a>
-                </li>
-                <li class='mx-2'>
-                  <a href="#" title="phone link">
-                    <span class="fa fa-phone-square fs35 text-info"></span>
-                  </a>
-                </li>
-                <li class='mx-2'>
-                  <a href="#" title="whatsapp plus link">
-                    <span class="fa fa-whatsapp fs35 text-danger"></span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div class="room-managment">
-                <ul class='list-unstyled d-inline-flex'>
-                    <li class='mx-3'><button>Создать комнату</button></li>
-                    <li class='mx-3'><button>Подключиться к комнате</button></li>
-                </ul>
-            </div>
-          </div>
+  <div class="page-heading">
+    <div class="media clearfix">
+      <div class="media-left pr30">
+        <a href="#">
+          <img class="media-object mw150" src="{{ profile.get_photo_url }}" alt="Логотип профиля {{ profile.user.username }}">
+        </a>
+      </div>
+      <div class="media-body va-m">
+        <h2 class="media-heading">{{ profile.user.username }}
+        </h2>
+        <p class="lead">Lorem ipsum dolor sit amet ctetur adicing elit, sed do eiusmod tempor incididunt</p>
+        <div class="media-links">
+          <ul class="list-inline list-unstyled d-inline-flex">
+            <li class='mx-2'>
+              <a href="#" title="facebook link">
+                <span class="fa fa-vk fs35 text-primary"></span>
+              </a>
+            </li>
+            <li class='mx-2'>
+              <a href="#" title="phone link">
+                <span class="fa fa-phone-square fs35 text-info"></span>
+              </a>
+            </li>
+            <li class='mx-2'>
+              <a href="#" title="whatsapp plus link">
+                <span class="fa fa-whatsapp fs35 text-danger"></span>
+              </a>
+            </li>
+          </ul>
         </div>
+        <div class="room-managment">
+          <ul class='list-unstyled d-inline-flex'>
+
+            <li class='mx-3'>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRoomModal">
+                Создать комнату
+              </button>
+            </li>
+            <li class='mx-3'>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#connectRoomModal">
+                Подключиться к комнате
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="row">
-        <div class="col-md-4">
-          <div class="panel">
-            <div class="panel-heading">
-              <span class="panel-icon">
-                <i class="fa fa-star"></i>
-              </span>
-              <span class="panel-title"> Статистика {{ profile.user.username }}</span>
-            </div>
-            <div class="panel-body pn">
-              <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last">
-                <tbody>
-                  <tr>
-                    <td>
-                      <span class="fa fa-desktop text-warning"></span>
-                    </td>
-                    <td>Сыграно игр</td>
-                    <td>500</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <span class="fa fa-trophy text-primary"></span>
-                    </td>
-                    <td>Выиграно игр</td>
-                    <td>499</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <span class="fa fa-clock-o text-info"></span>
-                    </td>
-                    <td>Времени за игрой</td>
-                    <td>23 час 10 минут</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel">
+        <div class="panel-heading">
+          <span class="panel-icon">
+            <i class="fa fa-star"></i>
+          </span>
+          <span class="panel-title"> Статистика {{ profile.user.username }}</span>
         </div>
-        <div class="col-md-8">
+        <div class="panel-body pn">
+          <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last">
+            <tbody>
+              <tr>
+                <td>
+                  <span class="fa fa-desktop text-warning"></span>
+                </td>
+                <td>Сыграно игр</td>
+                <td>500</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="fa fa-trophy text-primary"></span>
+                </td>
+                <td>Выиграно игр</td>
+                <td>499</td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="fa fa-clock-o text-info"></span>
+                </td>
+                <td>Времени за игрой</td>
+                <td>23 час 10 минут</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% if profile.rulesBook.all %}
+      <div class="panel">
+        <div class="panel-heading">
+          <span class="panel-icon">
+            <i class="fa fa-book" aria-hidden="true"></i>
+          </span>
+          <span class="panel-title"> Книги правил {{ profile.user.username }}</span>
+        </div>
+        <div class="panel-body pn">
+          <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last w-100">
+            <tbody>
+              {% for book in profile.rulesBook.all %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ book.title }}</td>
+                <td class='text-end'><button type="button" class="btn btn-outline-info"><i class="fa fa-eye"
+                      aria-hidden="true"></i></button></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+      <div class="panel-buttons px-4">
+        <button type="button" class="btn btn-outline-primary float-start"><i class="fa fa-pencil"
+            aria-hidden="true"></i> Редактировать профиль</button>
+        <a class="btn btn-outline-secondary float-end" href="{% url 'logout' %}"><i class="fa fa-sign-out"
+            aria-hidden="true"></i> Выйти</a>
+      </div>
+    </div>
+    <div class="col-md-8">
 
-          <div class="tab-block">
-            <ul class="nav nav-tabs">
-              <li class="active">
-                <a href="#tab1" data-toggle="tab">Активность</a>
-              </li>
-            </ul>
-            <div class="tab-content p30" style="height: 730px;">
-              <div id="tab1" class="tab-pane active">
-                <div class="media">
-                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
-                  <div class="media-body">
-                    <h5 class="media-heading mb20">Провел игру
-                      <small> - 23 февраля 2023 23:50</small>
-                    </h5>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
-                  </div>
-                </div>
-                <hr>
-                <div class="media">
-                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
-                  <div class="media-body">
-                    <h5 class="media-heading mb20">Участвовал в игре
-                      <small> - 10 февраля 2023 23:50</small>
-                    </h5>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
-                  </div>
-                </div>
-                <hr>
-                <div class="media">
-                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
-                  <div class="media-body">
-                    <h5 class="media-heading mb20">Победил в игре <span class="fa fa-trophy text-warning"></span>
-                      <small> - 5 февраля 2023 23:50</small>
-                    </h5>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
-                  </div>
-                </div>
-                <hr>
-                <div class="media">
-                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
-                  <div class="media-body">
-                    <h5 class="media-heading mb20">Победил в игре <span class="fa fa-trophy text-warning"></span>
-                      <small> - 5 февраля 2023 23:50</small>
-                    </h5>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
-                  </div>
-                </div>
-                <hr>
-                <div class="media">
-                  <a class="pull-left" href="#"> <img class="media-object mn thumbnail mw50" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="..."> </a>
-                  <div class="media-body">
-                    <h5 class="media-heading mb20">Победил в игре <span class="fa fa-trophy text-warning"></span>
-                      <small> - 5 февраля 2023 23:50</small>
-                    </h5>
-                    <img src="https://bootdey.com/img/Content/avatar/avatar6.png" class="mw100 px-2">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="mw100 px-2"> 
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="mw100 px-2">
-                  </div>
-                </div>
-                <div class="more-media text-center pt-5">
-                    <button>Показать еще</button>
-                </div>
+      <div class="tab-block">
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <a href="#tab1" data-toggle="tab">Активность</a>
+          </li>
+        </ul>
+        <div class="tab-content p30">
+          <div id="tab1" class="tab-pane active">
+            {% for game in profile.get_all_activities %}
+            <div class="media">
+              <a class="pull-left" href="{{ profile.get_absolute_url }}"  > <img class="media-object mn thumbnail mw50"
+                  src="{{ profile.get_photo_url }}" alt="Логотип профиля {{ profile.user.username }}"> </a>
+              <div class="media-body">
+                <h5 class="media-heading">{{ game.title }} 
+                  {% if game.winner %}
+                  <span class="fa fa-trophy text-warning"></span>
+                  {% endif %}
+                  <small> - {{ game.datetime }}</small>
+                  {% if not game.game_end %}
+                  <a class='text-decoration-none' href="{{ game.room_url }}">Продолжить...</a>
+                  {% endif %}
+                </h5>
+                {% for player in game.players %}
+                <a class='text-decoration-none' href="{{player.url}}">
+                  <img src="{{ player.photo }}" class="mw100 px-2">
+                  {% comment %} <span>{{ player.username }}</span> {% endcomment %}
+                </a>
+                {% endfor %}
               </div>
+            </div>
+            {% if not forloop.last %}
+            <hr>
+            {% endif %}
+            {% endfor %}
+            <div class="more-media text-center pt-5 d-none">
+              <button>Показать еще</button>
             </div>
           </div>
         </div>
       </div>
-  </section>
-
+    </div>
+  </div>
+</section>
+<div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Создать игру</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'createRoom' %}">
+          {% csrf_token %}
+          <div class="row g-3 align-items-center">
+            <div class="col-auto">
+              <label for="inputRoomType" class="col-form-label">Тип комнаты</label>
+            </div>
+            <div class="col-auto">
+              <select class="form-select" aria-label="Тип комнаты" name="type_room">
+                {% for type in type_room %}
+                <option value="{{type.0}}" {% if forloop.counter == 1 %}selected{% endif %}>{{type.1}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="row g-3 align-items-center mt-1">
+            <div class="col-auto">
+              <label for="inputRoomLeavel" class="col-form-label">Сколько уровней для победы?</label>
+            </div>
+            <div class="col-auto">
+              <input type="number" class="form-control" id="inputRoomLeavel" value="10" name='leavel_to_win'>
+            </div>
+          </div>
+          <div class="row g-3 align-items-center mt-1">
+            <div class="col-auto">
+              <label for="inputRoomType" class="col-form-label">Книга правил</label>
+            </div>
+            <div class="col-auto">
+              <select class="form-select" aria-label="Тип комнаты" name='rules_book'>
+                {% for book in profile.rulesBook.all %}
+                <option value="1" {% if forloop.counter == 1 %}selected{% endif %}>{{book.title}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary">Запустить комнату</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="connectRoomModal" tabindex="-1" aria-labelledby="connectRoomModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Подключиться к комнате</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form method="post" id="connectRoomForm" action="" >
+          <div class="modal-body">
+          <div class="mb-3">
+            {% csrf_token %}
+            <label for="InputRoomCode" class="form-label">Код комнаты</label>
+            <input type="text" class="form-control" id="InputRoomCode" aria-describedby="InputRoomCodeHelp" name="room">
+          </div>
+          <button class="btn btn-outline-secondary">Отсканируйте QR Код комнаты</button>
+          <button type="submit" class="btn btn-primary">Подключиться</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock body %}
-{% block footer %}{% endblock footer %}
-{% block scripts %}{% endblock scripts %}
+{% block scripts %}
+{% endblock scripts %}

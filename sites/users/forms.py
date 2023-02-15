@@ -8,4 +8,4 @@ class LoginForm(forms.Form):
         attrs={'placeholder':'Email','id': 'inputlogin', 'class': 'form-control'}))
     password = forms.CharField( widget=forms.PasswordInput(
         attrs={'placeholder':'Пароль', 'id': 'inputPassword', 'class': 'form-control'}))
-    captcha = ReCaptchaField()
+    captcha = ReCaptchaField(score_threshold=0.5)
