@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from loguru import logger
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -43,7 +43,7 @@ def ProfileViews(request, username = None):
     else:
         profile = request.user.profile
     if not profile:
-        return HttpResponse('Пользователь не найден')
+        return HttpResponseNotFound('Пользователь не найден')
     if request.POST:
         if request.POST.get('room'):
             return HttpResponseRedirect(reverse('room', args=(request.POST.get('room'),)))

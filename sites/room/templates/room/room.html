@@ -34,51 +34,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{ room.player.all }}
                                     {% for player in room.player.all %}
-                                    <tr class="inner-box">
+                                    <tr class="inner-box player" player='{{ player.pk }}'>
                                         <th scope="row">
-                                            <div class="event-date" onclick="$('#exampleModal').modal('show')">
-                                                <span>16</span>
-                                                <p><i class="fa fa-line-chart" aria-hidden="true"></i> 3 / <i
-                                                        class="fa fa-gavel" aria-hidden="true"></i> 7</p>
+                                            <div class="player-date" data-toggle="modal" data-target="#playerDataEditModal">
+                                                <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total'>2</span></h2>
+                                                <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level'>1</span> / <i
+                                                        class="fa fa-gavel" aria-hidden="true"></i> <span class='power'>1</span></p>
                                             </div>
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog  modal-dialog-centered" role="document">
-                                                  <div class="modal-content">
-                                                    <div class="modal-header">
-                                                      <h5 class="modal-title" id="exampleModalLabel">Контроль уровня и мощности для Имя участника</h5>
-                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                      </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <h3 class="my-3"><i class="fa fa-bolt" aria-hidden="true"></i> 16</h3>
-                                                        <div class="row my-3">
-                                                            <div class="col-6">
-                                                                <div class="qty">
-                                                                    <h6>Уровень</h6>
-                                                                    <span class="minus bg-dark">-</span>
-                                                                    <input type="number" class="count" name="qty" value="3">
-                                                                    <span class="plus bg-dark">+</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <div class="qty">
-                                                                    <h6>Мощность</h6>
-                                                                    <span class="minus bg-dark">-</span>
-                                                                    <input type="number" class="count" name="qty" value="3">
-                                                                    <span class="plus bg-dark">+</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </div>
                                         </th>
                                         <td>
-                                            <div class="event-img">
+                                            <div class="player-img player-gender">
                                                 {% if player.gender == 'M' %}
                                                 <i class="fa fa-mars" aria-hidden="true"></i>
                                                 {% elif player.gender == 'F' %}
@@ -86,19 +52,22 @@
                                                 {% else %}
                                                 <i class="fa fa-tree" aria-hidden="true"></i>
                                                 {% endif %}
-                                                <img src="{{ player.player.get_photo_url }}" alt="Аватар пользователя {{player.player.user.username}}" />
+                                                <img src="{{ player.player.get_photo_url }}"
+                                                    alt="Аватар пользователя {{player.player.user.username}}" />
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="event-wrap">
-                                                <h3><a href="{{player.player.get_absolute_url}}">{{player.player.user.username}}</a></h3>
+                                            <div class="player-wrap">
+                                                <h3><a
+                                                        href="{{player.player.get_absolute_url}}" class='player-name'>{{player.player.user.username}}</a>
+                                                </h3>
                                                 <div class="meta d-inline-flex">
                                                     <div class="race px-2">
                                                         <i class="fa fa-user" aria-hidden="true"></i>
                                                         {% if player.playerRace.all.first.get_value_display %}
-                                                            {{player.playerRace.all.first.get_value_display}}
+                                                        {{player.playerRace.all.first.get_value_display}}
                                                         {% else %}
-                                                            Человек
+                                                        Человек
                                                         {% endif %}
                                                     </div>
                                                     {% if player.playerClass.all.first.get_value_display %}
@@ -138,7 +107,8 @@
                         <span class="month">11:45</span>
                         <span class="year">25.12</span>
                     </span>
-                    <h2 class="title"><span class="fa fa-chevron-up" aria-hidden="true"></span> Имя становится 7 уровнем</h2>
+                    <h2 class="title"><span class="fa fa-chevron-up" aria-hidden="true"></span> Имя становится 7 уровнем
+                    </h2>
                     <p class="description">Игрок ИМЯ подрался с монстром и получил +1 уровень</p>
                 </div>
             </div>
@@ -172,7 +142,8 @@
                         <span class="month">11:45</span>
                         <span class="year">25.12</span>
                     </span>
-                    <h2 class="title"><span class="glyphicon glyphicon-heart-empty"></span> Имя сменил класс на Эльф</h2>
+                    <h2 class="title"><span class="glyphicon glyphicon-heart-empty"></span> Имя сменил класс на Эльф
+                    </h2>
                     <p class="description">
                     </p>
                 </div>
@@ -180,44 +151,53 @@
         </div>
     </div>
 </div>
+
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ -->
+<div class="modal fade" id="playerDataEditModal" tabindex="-1" role="dialog" aria-labelledby="playerDataEditModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="playerDataEditModalLabel">Контроль уровня и мощности для <span class='name'></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 class="my-3"><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total'>16</span></h3>
+                <div class="row my-3">
+                    <div class="col-6">
+                        <div class="qty player">
+                            <h6>Уровень</h6>
+                            <span class="decrease-level minus bg-dark player-data-edit">-</span>
+                            <input type="number" class="count level" name="qty" value="3">
+                            <span class="increase-level plus bg-dark player-data-edit">+</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="qty player">
+                            <h6>Мощность</h6>
+                            <span class="decrease-power minus bg-dark player-data-edit">-</span>
+                            <input type="number" class="count power" name="qty" value="3">
+                            <span class="increase-power plus bg-dark player-data-edit">+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 {% endblock body %}
 
 {% block scripts %}
 <script>
-    $(document).ready(function() {
-
-        // Повышение уровня игрока
-        $('.increase-level').on('click', function() {
-          var $level = $(this).prevAll('.level').first();
-          var newLevel = parseInt($level.text()) + 1;
-          $level.text(newLevel);
-        });
-      
-        // Понижение уровня игрока
-        $('.decrease-level').on('click', function() {
-          var $level = $(this).prevAll('.level').first();
-          var newLevel = parseInt($level.text()) - 1;
-          if (newLevel >= 1) {
-            $level.text(newLevel);
-          }
-        });
-      
-        // Повышение силы игрока
-        $('.increase-power').on('click', function() {
-          var $power = $(this).prevAll('.power').first();
-          var newPower = parseInt($power.text()) + 1;
-          $power.text(newPower);
-        });
-      
-        // Понижение силы игрока
-        $('.decrease-power').on('click', function() {
-          var $power = $(this).prevAll('.power').first();
-          var newPower = parseInt($power.text()) - 1;
-          if (newPower >= 1) {
-            $power.text(newPower);
-          }
-        });
-      
-      });
+    const changeRoomPlayer_URL = "{% url 'ajax_changeRoomPlayer' %}";
+    const csrf_token = "{{ csrf_token }}";
 </script>
+<script src="{% static 'room/js/playerDataUpdate.js' %}"></script>
+<script src="{% static 'room/js/playerDataChangingAjax.js' %}"></script>
 {% endblock %}
