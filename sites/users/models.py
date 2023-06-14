@@ -1,24 +1,39 @@
+from datetime import datetime
+
+from django.contrib.auth.models import (AbstractBaseUser, AbstractUser,
+                                        BaseUserManager, PermissionsMixin,
+                                        User)
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
-from loguru import logger
-from datetime import datetime
 from django_ckeditor_5.fields import CKEditor5Field
+from loguru import logger
 
-class Profile(models.Model):
+from .managers import CustomUserManager
+
+
+class CustomUser(AbstractUser):
     GENDER_CHOICES = (
         ('M', 'Мужской'),
         ('F', 'Женский'),
         ('O', 'Не задано'),
     )
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь', related_name="profile")
+        
+    username = None
+    email = models.EmailField('email address', unique=True)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    objects = CustomUserManager()
+
     photo = models.ImageField("Фото", upload_to="users/profile/photo", blank=True)
     gender = models.CharField("Пол", max_length = 1, choices = GENDER_CHOICES, default='O')
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
 
+    def __str__(self):
+        return self.email
+    
     class Meta:
         ordering = ["create"]
         verbose_name_plural='Профиль пользователей'
@@ -29,7 +44,7 @@ class Profile(models.Model):
             elem = {
                 'datetime':room_obj.create,
                 'title': actions,
-                'room_id': room_obj.code,
+                'code': room_obj.code,
                 'room_url': room_obj.get_absolute_url(),
                 'game_end': room_obj.end,
                 'winner': False,
@@ -43,15 +58,17 @@ class Profile(models.Model):
 
         activities_list = []
         for item in self.roomOwner.all():
-            activities_list.append(create_elem(item, 'Начал игру'))
+            if item:
+                activities_list.append(create_elem(item, 'Начал игру'))
         for item in self.roomPlayer.all():
-            activities_list.append(create_elem(item.room, 'Участвовал в игре'))
+            if item.room:
+                activities_list.append(create_elem(item.room, 'Участвовал в игре'))
         activities_list_sort = sorted(activities_list, key=lambda d: d['datetime'], reverse=True) 
 
         return activities_list_sort
 
     def get_absolute_url(self):
-        return reverse('profile', args=[str(self.user.username)])
+        return reverse('profile', args=[str(self.user)])
 
     def get_photo_url(self):
         if self.photo:
@@ -60,12 +77,12 @@ class Profile(models.Model):
             return 'https://bootdey.com/img/Content/avatar/avatar7.png'
 
     def __str__(self):
-        return str(self.user.username)
+        return str(self.user)
 
 
 class RulesBook(models.Model):
     title = models.CharField("Заголовок", max_length=100)
-    user = models.ForeignKey(Profile, verbose_name="Владелец книги", on_delete=models.CASCADE, related_name='rulesBook')
+    user = models.ForeignKey(CustomUser, verbose_name="Владелец книги", on_delete=models.CASCADE, related_name='rulesBook')
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
 
@@ -86,9 +103,3 @@ class RulesSingle(models.Model):
         ordering = ["title"]
         verbose_name_plural='Правила из книги'
         verbose_name='Правило из книги'
-
-@receiver(post_save, sender=User)
-def new_user(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-        instance.profile.save()

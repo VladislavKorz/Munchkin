@@ -11,11 +11,11 @@
     <div class="media clearfix">
       <div class="media-left pr30">
         <a href="#">
-          <img class="media-object mw150" src="{{ profile.get_photo_url }}" alt="Логотип профиля {{ profile.user.username }}">
+          <img class="media-object mw150" src="{{ profile.get_photo_url }}" alt="Логотип профиля {{ profile.user }}">
         </a>
       </div>
       <div class="media-body va-m">
-        <h2 class="media-heading">{{ profile.user.username }}
+        <h2 class="media-heading">{{ profile.user }}
         </h2>
         <p class="lead">Lorem ipsum dolor sit amet ctetur adicing elit, sed do eiusmod tempor incididunt</p>
         <div class="media-links">
@@ -63,7 +63,7 @@
           <span class="panel-icon">
             <i class="fa fa-star"></i>
           </span>
-          <span class="panel-title"> Статистика {{ profile.user.username }}</span>
+          <span class="panel-title"> Статистика {{ profile.user }}</span>
         </div>
         <div class="panel-body pn">
           <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last">
@@ -99,7 +99,7 @@
           <span class="panel-icon">
             <i class="fa fa-book" aria-hidden="true"></i>
           </span>
-          <span class="panel-title"> Книги правил {{ profile.user.username }}</span>
+          <span class="panel-title"> Книги правил {{ profile.user }}</span>
         </div>
         <div class="panel-body pn">
           <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last w-100">
@@ -137,21 +137,22 @@
             {% for game in profile.get_all_activities %}
             <div class="media">
               <a class="pull-left" href="{{ profile.get_absolute_url }}"  > <img class="media-object mn thumbnail mw50"
-                  src="{{ profile.get_photo_url }}" alt="Логотип профиля {{ profile.user.username }}"> </a>
+                  src="{{ profile.get_photo_url }}" alt="Логотип профиля {{ profile.user }}"> </a>
               <div class="media-body">
                 <h5 class="media-heading">{{ game.title }} 
                   {% if game.winner %}
                   <span class="fa fa-trophy text-warning"></span>
                   {% endif %}
                   <small> - {{ game.datetime }}</small>
-                  {% if not game.game_end %}
-                  <a class='text-decoration-none' href="{{ game.room_url }}">Продолжить...</a>
+                  {% if not game.game_end and request.user.profile == profile %}
+                  <a class='text-decoration-none' href="{{ game.room_url }}">Продолжить...</a><br>
+                  <a class='text-decoration-none text-secondary fs-6' href="{% url 'stopRoom' room_code=game.code %}">Остановить игру...</a>
                   {% endif %}
                 </h5>
                 {% for player in game.players %}
                 <a class='text-decoration-none' href="{{player.url}}">
                   <img src="{{ player.photo }}" class="mw100 px-2">
-                  {% comment %} <span>{{ player.username }}</span> {% endcomment %}
+                  {% comment %} <span>{{ player }}</span> {% endcomment %}
                 </a>
                 {% endfor %}
               </div>

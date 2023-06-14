@@ -1,47 +1,50 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from loguru import logger
+import requests
+from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.urls import reverse
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
-from .forms import LoginForm
-from room.models import *
-from .models import *
-from django.conf import settings
+from django.http import (HttpResponse, HttpResponseNotFound,
+                         HttpResponseRedirect)
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.views import View
 from loguru import logger
-import requests
+from room.models import *
 
-def LoginViews(request):
-    context = {
-        "title": "Моя первая страница",
-        "recaptcha_site_key": settings.RECAPTCHA_PRIVATE_KEY
-    }
-    # Форма логина на сайт
-    if not request.user.is_authenticated:
-        formLogin = LoginForm(request.POST or None)
-        logger.debug(request.POST)
-        if formLogin.is_valid():
-            passwordvalue = formLogin.cleaned_data.get("password")
-            username = User.objects.filter(email = formLogin.cleaned_data.get("email")).first().username
-            user = authenticate(username=username, password=passwordvalue)
+from .forms import LoginForm, RegisterForm
+from .models import *
+
+
+class LoginView(View):
+    form_class = AuthenticationForm
+    template_name = 'users/login.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request, request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(email=email, password=password)
             if user is not None:
-                login(request, user)
-            else:
-                context.update(
-                    {'Loginform': formLogin, 'errorUserLogin': 'Неправильная комбинация имени пользователя и пароля'})
-        else:
-            context.update({'Loginform': formLogin})
-    else:
-        return HttpResponseRedirect(reverse('profile'))
-    return render(request, 'users/login.html', context)
+                if user.is_active:
+                    login(request, user)
+                    return redirect('profile')
+        return render(request, self.template_name, {'form': form})
+    
+
+
 
 @login_required
 def ProfileViews(request, username = None):
     if username:
-        profile = Profile.objects.filter(user__username = username).first()
+        profile = CustomUser.objects.filter().first()
     else:
-        profile = request.user.profile
+        profile = request.user
     if not profile:
         return HttpResponseNotFound('Пользователь не найден')
     if request.POST:
@@ -49,7 +52,7 @@ def ProfileViews(request, username = None):
             return HttpResponseRedirect(reverse('room', args=(request.POST.get('room'),)))
 
     context = {
-        "title": f"Манчкин - {profile.user.username}",
+        "title": f"Манчкин - {profile}",
         "profile": profile,
         "type_room": Rooms.ROOM_TYPE_CHOICES
     }

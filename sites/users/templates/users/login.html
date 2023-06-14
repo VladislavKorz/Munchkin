@@ -5,9 +5,6 @@
 {% block header %}
 
 
-{% load recaptcha3 %}
-{% recaptcha_init %}
-{% recaptcha_ready action_name='homepage' %}
 <style>
   html,
   body {
@@ -48,37 +45,40 @@
 
 {% block body %}
 <main class="form-signin w-100 m-auto">
-  {% if Loginform %}
-  <form method="post">
-    {% csrf_token %}
-    <h1 class="h3 mb-3 fw-normal">Войдите или зарегистрируйтесь</h1>
-    <div class="form-floating">
-      {{ Loginform.email }}
-      <label for="floatingInput">Email адрес</label>
-      {{ Loginform.email.errors }}
-
+  <div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Login</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.username.id_for_label }}">Email address</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.password.id_for_label }}">Password</label>
+                            {{ form.password }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-floating">
-      {{ Loginform.password }}
-      <label for="floatingPassword">Пароль</label>
-      {{ Loginform.password.errors }}
-
-    </div>
-    {{ Loginform.captcha }}
-    {% if Loginform.captcha.errors %}Ошибка проверки на работо, попробуйте еще раз. {{Loginform.captcha.errors}}{% endif %}
-
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
-    <a href="#" class="float-end py-2">Зарегистрироваться</a>
-    <p class="mt-5 mb-3 text-muted">QyCode Studios © 2023</p>
-  </form>
-  {% else %}
-  <h3 class='text-center'>Добро пожаловать, {{ request.user.username }}!<br></h3>
+</div>
+  {% comment %} {% else %}
+  <h3 class='text-center'>Добро пожаловать, {{ request.user }}!<br></h3>
   <p class='text-center'>Через 3 секунд вы будете перенаправлены <a href="/">на главную страницу</a></p>
   <script>
     setTimeout(function(){
       window.location.href = '/';
     }, 3 * 1000);
   </script>
-  {% endif %}
+  {% endif %} {% endcomment %}
 </main>
+
 {% endblock body %}

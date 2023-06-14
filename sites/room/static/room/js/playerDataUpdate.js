@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     // Открытие модального окна при клике на имя игрока
     $('.player-date').on('click', function() {
@@ -7,6 +6,7 @@ $(document).ready(function() {
 
         // Заполнение полей модального окна
         $modal.find('.name').text($player.find('.player-name').text());
+        $modal.find('.name').attr('player', $player.attr('player'));
         $modal.find('.total').text($player.find('.total').text());
         $modal.find('.level').val($player.find('.level').text());
         $modal.find('.power').val($player.find('.power').text());
@@ -20,10 +20,20 @@ $(document).ready(function() {
     $("#playerDataEditModal").on("hide.bs.modal", function () {
         var $player = $('.player.active');
         var $modal = $('#playerDataEditModal');
+        
+        var obj = new Object();
+        obj.player = $modal.find('.name').attr('player');
+        obj.level = $modal.find('.level').val();
+        obj.power  = $modal.find('.power').val();
+        obj.total = $modal.find('.total').text();
+        obj.user_room = $modal.find('.total').text()
+        
         $player.removeClass("active");
-        $player.find('.level').text($modal.find('.level').val());
-        $player.find('.power').text($modal.find('.power').val());
-        $player.find('.total').text($modal.find('.total').text());
+        $player.find('.level').text(obj.level);
+        $player.find('.power').text(obj.power);
+        $player.find('.total').text(obj.total);
+
+        sendData(obj);
     });
 
     // Увеличение и уменьшение уровня игрока

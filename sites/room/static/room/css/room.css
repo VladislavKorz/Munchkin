@@ -240,6 +240,7 @@ body {
     height: 30px;
     text-align: center;
     padding-top: 6px;
+    cursor: pointer;
 }
 
 .player-img i.fa-mars {
@@ -514,27 +515,19 @@ input:disabled {
 }
 
 /* TIMELINE SCROLLBAR*/
-/* ::-webkit-scrollbar-thumb {
-    
-} */
-
 #timeline-block::-webkit-scrollbar {
     width: 7px;
-    /* ширина scrollbar */
 }
 
 #timeline-block::-webkit-scrollbar-track {
     background: #dbdbdb73;
     width: 7px;
     border-radius: 100px;
-
-    /* цвет дорожки */
 }
 
 #timeline-block::-webkit-scrollbar-thumb {
-    background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
+    background-image: linear-gradient(180deg, #708ad4 0%, #d0368a 99%);
     border-radius: 100px;
-    
 }
 
 /* END TIMELINE */

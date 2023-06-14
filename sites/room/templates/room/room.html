@@ -24,6 +24,7 @@
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade active show" id="home" role="tabpanel">
                         <div class="table-responsive">
+                            {% if room.player.all %}
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -38,9 +39,9 @@
                                     <tr class="inner-box player" player='{{ player.pk }}'>
                                         <th scope="row">
                                             <div class="player-date" data-toggle="modal" data-target="#playerDataEditModal">
-                                                <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total'>2</span></h2>
-                                                <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level'>1</span> / <i
-                                                        class="fa fa-gavel" aria-hidden="true"></i> <span class='power'>1</span></p>
+                                                <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total'>{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
+                                                <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level'>{{player.get_leavel}}</span> / <i
+                                                        class="fa fa-gavel" aria-hidden="true"></i> <span class='power'>{{player.get_power}}</span></p>
                                             </div>
                                         </th>
                                         <td>
@@ -53,29 +54,40 @@
                                                 <i class="fa fa-tree" aria-hidden="true"></i>
                                                 {% endif %}
                                                 <img src="{{ player.player.get_photo_url }}"
-                                                    alt="Аватар пользователя {{player.player.user.username}}" />
+                                                    alt="Аватар пользователя {{player.player.user}}" />
                                             </div>
                                         </td>
                                         <td>
                                             <div class="player-wrap">
                                                 <h3><a
-                                                        href="{{player.player.get_absolute_url}}" class='player-name'>{{player.player.user.username}}</a>
+                                                        href="{{player.player.get_absolute_url}}" class='player-name'>{{player.player.user}}</a>
                                                 </h3>
                                                 <div class="meta d-inline-flex">
                                                     <div class="race px-2">
                                                         <i class="fa fa-user" aria-hidden="true"></i>
-                                                        {% if player.playerRace.all.first.get_value_display %}
-                                                        {{player.playerRace.all.first.get_value_display}}
+                                                        {% if player.get_racer %}
+                                                        {{ player.get_racer }}
                                                         {% else %}
                                                         Человек
                                                         {% endif %}
                                                     </div>
-                                                    {% if player.playerClass.all.first.get_value_display %}
+                                                    {% if player.get_class %}
                                                     <div class="class px-2">
-                                                        <i class="fa fa-gamepad" aria-hidden="true"></i>
-                                                        {{player.playerClass.all.first.get_value_display}}
+                                                        <div class="btn-group">
+                                                            <i class="fa fa-gamepad" aria-hidden="true"></i>
+                                                            <a href="#" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                {{ player.get_class }}
+                                                            </a>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a class="dropdown-item" href="#">Действие 1</a></li>
+                                                                <li><a class="dropdown-item" href="#">Действие 2</a></li>
+                                                                <li><a class="dropdown-item" href="#">Действие 3</a></li>
+                                                                <li><a class="dropdown-item" href="#">Действие 4</a></li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                     {% endif %}
+                                                    
                                                 </div>
                                             </div>
                                         </td>
@@ -89,6 +101,9 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% else %}
+                            <h5 class='p-5 m-5'>Ожидание игроков</h5>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -97,7 +112,7 @@
     </div>
 </div>
 
-
+{% if False %}
 <div class="container" id="timeline-block">
     <div class="row">
         <div class="panel-timeline">
@@ -151,6 +166,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <!-- МОДАЛЬНОЕ ОКНО ДЛЯ НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ -->
 <div class="modal fade" id="playerDataEditModal" tabindex="-1" role="dialog" aria-labelledby="playerDataEditModalLabel"
@@ -170,7 +186,7 @@
                         <div class="qty player">
                             <h6>Уровень</h6>
                             <span class="decrease-level minus bg-dark player-data-edit">-</span>
-                            <input type="number" class="count level" name="qty" value="3">
+                            <input type="number" class="count level" name="qty" value="1">
                             <span class="increase-level plus bg-dark player-data-edit">+</span>
                         </div>
                     </div>
@@ -178,7 +194,7 @@
                         <div class="qty player">
                             <h6>Мощность</h6>
                             <span class="decrease-power minus bg-dark player-data-edit">-</span>
-                            <input type="number" class="count power" name="qty" value="3">
+                            <input type="number" class="count power" name="qty" value="0">
                             <span class="increase-power plus bg-dark player-data-edit">+</span>
                         </div>
                     </div>
@@ -197,7 +213,33 @@
 <script>
     const changeRoomPlayer_URL = "{% url 'ajax_changeRoomPlayer' %}";
     const csrf_token = "{{ csrf_token }}";
+    function sendData(obj_dict){
+        $.ajax({
+            url: changeRoomPlayer_URL,
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: csrf_token,
+                user_room: obj_dict.player,
+                data: JSON.stringify(obj_dict),
+            },
+            success: function (data) {
+                console.log('Okkeeeee')
+                {% comment %} gender.removeClass('fa-spinner').addClass(gender_class);
+                if (gender_val == 'M'){
+                    gender_val = 'он брутальный мужик'
+                } else {
+                    gender_val = 'она храбрая женщина'
+                }
+                mkNoti(
+                        "Смена пола",
+                        "Манчкин " + $player.find('.player-name').text() + " сменил пол, теперь " + gender_val + "!",
+                        {status: "info"}
+                    ); {% endcomment %}
+            }
+        });
+    }
 </script>
+
 <script src="{% static 'room/js/playerDataUpdate.js' %}"></script>
-<script src="{% static 'room/js/playerDataChangingAjax.js' %}"></script>
+<script src="{% static 'room/js/playerGenderChangingAjax.js' %}"></script>
 {% endblock %}

@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ay+r68(0rh9y-kr+yc^^55lhmy%*gxxj!#y!=f38#)1cw=tj!=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'munchkin.qycode.ru']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'munchkin.qycode.ru', '192.168.0.10']
 
 
 # Application definition
@@ -38,10 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'snowpenguin.django.recaptcha3',
+    'channels',
     'django_ckeditor_5',
-    'home',
     'users',
+    'home',
     'room',
 ]
 
@@ -121,7 +121,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -139,6 +138,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
 DEFAULT_FROM_EMAIL = "notifications@qycode.ru"
 SERVER_EMAIL = 'notifications@qycode.ru'
 
@@ -148,13 +149,6 @@ EMAIL_HOST_PASSWORD = "pjgVmGWbY3s86yK1s7TV"
 EMAIL_PORT = 2525
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-
-RECAPTCHA_PRIVATE_KEY = '6Ld0oHAkAAAAALS_niPwwIhaqEaGrghp46GxY1hS'
-RECAPTCHA_PUBLIC_KEY = '6Ld0oHAkAAAAAG5v9lePLn4xwATnmFq4zFvBjqlb'
-RECAPTCHA_DEFAULT_ACTION = 'generic'
-RECAPTCHA_SCORE_THRESHOLD = 0.5
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 customColorPalette = [
@@ -183,6 +177,9 @@ customColorPalette = [
         'label': 'Blue'
     },
 ]
+
+ASGI_APPLICATION = 'sites.routing.application'
+
 
 CKEDITOR_5_CONFIGS = {
     'default': {

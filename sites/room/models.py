@@ -1,10 +1,11 @@
-from django.db import models
-from django.urls import reverse
-from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
-from django.utils.crypto import get_random_string
-from users.models import Profile
 import datetime
+
+from django.db import models
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
+from django.urls import reverse
+from django.utils.crypto import get_random_string
+from users.models import CustomUser
 
 ROOMS_CODE_LENGHT = 5
 
@@ -19,8 +20,8 @@ class Rooms(models.Model):
     room_type = models.CharField("Тип игры", max_length = 1, choices = ROOM_TYPE_CHOICES, default='O')
     leavel_to_win = models.IntegerField("Сколько нужно уровней для победы", default=10)
     rules_book = models.ForeignKey("users.RulesBook", verbose_name="Книга правил для комнаты", on_delete=models.SET_NULL, null=True)
-    admin = models.ForeignKey("users.Profile", verbose_name="Админ комнаты", on_delete=models.SET_NULL, null=True, related_name='roomAdmin')
-    owner = models.ForeignKey("users.Profile", verbose_name="Владелец комнаты", on_delete=models.SET_NULL, null=True, related_name="roomOwner")
+    admin = models.ForeignKey("users.CustomUser", verbose_name="Админ комнаты", on_delete=models.SET_NULL, null=True, related_name='roomAdmin')
+    owner = models.ForeignKey("users.CustomUser", verbose_name="Владелец комнаты", on_delete=models.SET_NULL, null=True, related_name="roomOwner")
     end = models.BooleanField("Игра завершилась?", default=False)
 
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
@@ -39,12 +40,30 @@ class Rooms(models.Model):
 
 class RoomPlayer(models.Model):
     room = models.ForeignKey("room.Rooms", verbose_name="Комната", on_delete=models.SET_NULL, null=True, related_name='player')
-    player = models.ForeignKey("users.Profile", verbose_name="Игрок", on_delete=models.SET_NULL, null=True, related_name='roomPlayer')
+    player = models.ForeignKey("users.CustomUser", verbose_name="Игрок", on_delete=models.SET_NULL, null=True, related_name='roomPlayer')
     order = models.IntegerField("Порядок игроков", default=1)
-    gender = models.CharField("Пол", max_length = 1, choices = Profile.GENDER_CHOICES, default='O')
+    gender = models.CharField("Пол", max_length = 1, choices = CustomUser.GENDER_CHOICES, default='O')
     
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
-    create = models.DateField(verbose_name='Дата старта', auto_now_add=True)
+    create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
+
+    def get_leavel(self):
+        return self.leavel.all().order_by('-pk').first().leavel
+
+    def get_power(self):
+        return self.power.all().order_by('-pk').first().power
+    
+    def get_racer(self):
+        if self.playerRace.all():
+            return self.playerRace.all().order_by('-pk').first().get_value_display()
+        else:
+            return None
+    
+    def get_class(self):
+        if self.playerClass.all():
+            return self.playerClass.all().order_by('-pk').first().get_value_display()
+        else:
+            return None
 
     class Meta:
         ordering = ['-order']
@@ -52,21 +71,28 @@ class RoomPlayer(models.Model):
         verbose_name_plural = "Игрок комнаты"
 
     def __str__(self):
-        return str(self.room) + str(self.player)
+        return f"{self.room} - {self.player}"
 
 class PlayerLeavel(models.Model):
-    player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.SET_NULL, null=True)
+    player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='leavel')
     leavel = models.IntegerField("Уровень", default=1)
-    create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
+    create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
+    class Meta:
+        ordering = ['-create']
+        verbose_name = "Уровень игроков в игре"
 
 
 class PlayerPower(models.Model):
-    player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.SET_NULL, null=True)
+    player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='power')
     power = models.IntegerField("Мощность", default=0)
-    create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
+    create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
+    class Meta:
+        ordering = ['-create']
+        verbose_name = "Мощность игроков в игре"
 
 class PlayerClass(models.Model):
     CLASS_CHOICES = (
+        ('N', 'Нет'),
         ('W', 'Воин'),
         ('M', 'Волшебник'),
         ('T', 'Вор'),
@@ -74,30 +100,31 @@ class PlayerClass(models.Model):
     )
     
     player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='playerClass')
-    value = models.CharField("Класс", max_length = 1, choices = CLASS_CHOICES, default='O')
-    create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
+    value = models.CharField("Класс", max_length = 1, choices = CLASS_CHOICES, default='N')
+    create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     class Meta:
-        ordering = ['-create']
+        ordering = ['-pk']
 
 
 class PlayerRace(models.Model):
     CLASS_CHOICES = (
+        ('H', 'Человек'),
         ('W', 'Эльф'),
         ('M', 'Дварф'),
         ('T', 'Хафлингом'),
     )
     player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='playerRace')
-    value = models.CharField("Класс", max_length = 1, choices = CLASS_CHOICES, default='O')
-    create = models.DateField(verbose_name='Дата создания', auto_now_add=True)
+    value = models.CharField("Класс", max_length = 1, choices = CLASS_CHOICES, default='H')
+    create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     class Meta:
-        ordering = ['-create']
+        ordering = ['-pk']
 
 class RoomBattle(models.Model):
     monster = models.IntegerField("Итоговая сила монстра", default=0)
     player = models.IntegerField("Итоговая сила игрока/команды", default=0)
     
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
-    create = models.DateField(verbose_name='Дата старта', auto_now_add=True)
+    create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
 
 class RoomBattlePlayer(models.Model):
     battle = models.ForeignKey("room.RoomBattle", verbose_name="Битва", on_delete=models.CASCADE, null=True)
@@ -105,7 +132,7 @@ class RoomBattlePlayer(models.Model):
     power = models.IntegerField("Усиления игрока", default=0)
 
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
-    create = models.DateField(verbose_name='Дата старта', auto_now_add=True)
+    create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
 
 class RoomBattleMonster(models.Model):
     battle = models.ForeignKey("room.RoomBattle", verbose_name="Битва", on_delete=models.CASCADE, null=True)
@@ -113,7 +140,7 @@ class RoomBattleMonster(models.Model):
     power = models.IntegerField("Усиления монстра", default=0)
 
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
-    create = models.DateField(verbose_name='Дата старта', auto_now_add=True)
+    create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
 
 
 
@@ -127,3 +154,12 @@ def get_random_code(sender, instance, *args, **kwargs):
             room = Rooms.objects.filter(code = code)
         instance.code = code
         return code
+
+
+@receiver(post_save, sender=RoomPlayer)
+def add_models(sender, instance, created=False, *args, **kwargs):
+    if instance and created:
+        PlayerLeavel.objects.create(player=instance)
+        PlayerPower.objects.create(player=instance)
+        PlayerClass.objects.create(player=instance)
+        PlayerRace.objects.create(player=instance)
