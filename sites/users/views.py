@@ -39,9 +39,9 @@ class LoginView(View):
 
 
 @login_required
-def ProfileViews(request, username=None):
-    if username:
-        profile = CustomUser.objects.filter().first()
+def ProfileViews(request, email=None):
+    if email:
+        profile = CustomUser.objects.filter(email=email).first()
     else:
         profile = request.user
     if not profile:
