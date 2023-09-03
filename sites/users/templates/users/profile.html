@@ -139,7 +139,7 @@
               <a class="pull-left" href="{{ profile.get_absolute_url }}"  > <img class="media-object mn thumbnail mw50"
                   src="{{ profile.get_photo_url }}" alt="Логотип профиля {{ profile.user }}"> </a>
               <div class="media-body">
-                <h5 class="media-heading">{{ game.title }} 
+                <h5 class="media-heading">{{ game.title }}
                   {% if game.winner %}
                   <span class="fa fa-trophy text-warning"></span>
                   {% endif %}
@@ -205,7 +205,7 @@
               <label for="inputRoomType" class="col-form-label">Книга правил</label>
             </div>
             <div class="col-auto">
-              <select class="form-select" aria-label="Тип комнаты" name='rules_book'>
+              <select class="form-select" aria-label="Книга правил" name='rules_book'>
                 {% for book in profile.rulesBook.all %}
                 <option value="1" {% if forloop.counter == 1 %}selected{% endif %}>{{book.title}}</option>
                 {% endfor %}

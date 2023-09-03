@@ -12,7 +12,8 @@ from django.views import View
 from loguru import logger
 from room.models import *
 
-from .forms import LoginForm, RegisterForm
+from .forms import CustomUserCreationForm
+# from .forms import LoginForm, RegisterForm
 from .models import *
 
 
@@ -35,12 +36,10 @@ class LoginView(View):
                     login(request, user)
                     return redirect('profile')
         return render(request, self.template_name, {'form': form})
-    
-
 
 
 @login_required
-def ProfileViews(request, username = None):
+def ProfileViews(request, username=None):
     if username:
         profile = CustomUser.objects.filter().first()
     else:
@@ -57,3 +56,16 @@ def ProfileViews(request, username = None):
         "type_room": Rooms.ROOM_TYPE_CHOICES
     }
     return render(request, 'users/profile.html', context)
+
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Логиним пользователя сразу после регистрации
+            login(request, user)
+            return redirect('profile')  # Перенаправляем на страницу профиля
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'users/register.html', {'form': form})

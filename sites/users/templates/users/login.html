@@ -20,7 +20,7 @@
   }
 
   .form-signin {
-    max-width: 330px;
+    max-width: 600px;
     padding: 15px;
   }
 
@@ -82,3 +82,16 @@
 </main>
 
 {% endblock body %}
+
+
+
+
+  {% comment %} {% else %}
+  <h3 class='text-center'>Добро пожаловать, {{ request.user }}!<br></h3>
+  <p class='text-center'>Через 3 секунд вы будете перенаправлены <a href="/">на главную страницу</a></p>
+  <script>
+    setTimeout(function(){
+      window.location.href = '/';
+    }, 3 * 1000);
+  </script>
+  {% endif %} {% endcomment %}
