@@ -96,17 +96,19 @@
                                                             <i class="fa fa-gamepad" aria-hidden="true"></i>
                                                             <a href="#" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                                 {{ player.get_class }}
+                                                                {% comment %} {{ player.playerClass.last()}} {% endcomment %}
                                                             </a>
                                                             <ul class="dropdown-menu">
-                                                                <li><a class="dropdown-item" href="#">Действие 1</a></li>
-                                                                <li><a class="dropdown-item" href="#">Действие 2</a></li>
-                                                                <li><a class="dropdown-item" href="#">Действие 3</a></li>
-                                                                <li><a class="dropdown-item" href="#">Действие 4</a></li>
+                                                                {% for player_class in classes %}
+                                                                    {% comment %} <li><a class="dropdown-item" href="#">{{ player_class.0 }}</a></li> {% endcomment %}
+                                                                    <li><a class="dropdown-item" href="{% url 'update_player_class' player.pk player_class.0 %}">{{ player_class.1 }}</a></li>
+                                                                {% endfor %}
+
                                                             </ul>
                                                         </div>
                                                     </div>
                                                     {% endif %}
-                                                    
+
                                                 </div>
                                             </div>
                                         </td>

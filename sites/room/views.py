@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from loguru import logger
 
 from .models import *
+from .models import PlayerClass
 
 
 @login_required
@@ -40,5 +41,18 @@ def RoomViews(request, room_code=None):
     context = {
         "title": f"Комната",
         'room': room,
+        'classes': PlayerClass.CLASS_CHOICES
     }
     return render(request, 'room/room.html', context)
+
+
+@login_required
+def update_player_class(request, player_id, class_value):
+    player = RoomPlayer.objects.get(pk=player_id)
+    player_class = player.playerClass.last()
+
+    # Установите новое значение класса игрока
+    player_class.value = class_value
+    player_class.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
