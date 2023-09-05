@@ -41,7 +41,8 @@ def RoomViews(request, room_code=None):
     context = {
         "title": f"Комната",
         'room': room,
-        'classes': PlayerClass.CLASS_CHOICES
+        'classes': PlayerClass.CLASS_CHOICES,
+        'races': PlayerRace.CLASS_CHOICES,
     }
     return render(request, 'room/room.html', context)
 
@@ -54,5 +55,17 @@ def update_player_class(request, player_id, class_value):
     # Установите новое значение класса игрока
     player_class.value = class_value
     player_class.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def update_player_race(request, player_id, race_value):
+    player = RoomPlayer.objects.get(pk=player_id)
+    player_race = player.playerRace.last()
+
+    # Установите новое значение класса игрока
+    player_race.value = race_value
+    player_race.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
