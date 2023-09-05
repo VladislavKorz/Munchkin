@@ -20,12 +20,23 @@ class CustomUser(AbstractUser):
         ('O', 'Не задано'),
     )
 
+
+    LANGUAGE_CHOICES = (
+        ('ru', 'Русский'),
+        ('en', 'Английский'),
+        ('de', 'Немецкий'),
+        ('ch', 'Китайский'),
+    )
+
+
     username = None
     email = models.EmailField('email address', unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
 
+    name = models.CharField('имя пользователя', max_length=64, blank=True, null=True)
+    language = models.CharField("Язык", max_length=2, choices=LANGUAGE_CHOICES, default='ru')
     photo = models.ImageField(
         "Фото", upload_to="users/profile/photo", blank=True)
     gender = models.CharField(
@@ -65,8 +76,9 @@ class CustomUser(AbstractUser):
                 activities_list.append(create_elem(item, 'Начал игру'))
         for item in self.roomPlayer.all():
             if item.room:
-                activities_list.append(create_elem(
-                    item.room, 'Участвовал в игре'))
+                if item.room.code not in [i['code'] for i in activities_list]:
+                    activities_list.append(create_elem(
+                        item.room, 'Участвовал в игре'))
         activities_list_sort = sorted(
             activities_list, key=lambda d: d['datetime'], reverse=True)
 

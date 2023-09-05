@@ -1,0 +1,533 @@
+body {
+    margin-top: 20px;
+}
+
+.event-schedule-area .section-title .title-text {
+    margin-bottom: 50px;
+}
+
+.event-schedule-area .tab-area .nav-tabs {
+    border-bottom: inherit;
+}
+
+.event-schedule-area .tab-area .nav {
+    border-bottom: inherit;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin-top: 80px;
+}
+
+.event-schedule-area .tab-area .nav-item {
+    margin-bottom: 75px;
+}
+
+.event-schedule-area .tab-area .nav-item .nav-link {
+    text-align: center;
+    font-size: 22px;
+    color: #333;
+    font-weight: 600;
+    border-radius: inherit;
+    border: inherit;
+    padding: 0px;
+    text-transform: capitalize !important;
+}
+
+.event-schedule-area .tab-area .nav-item .nav-link.active {
+    color: #4125dd;
+    background-color: transparent;
+}
+
+.event-schedule-area .tab-area .tab-content .table {
+    margin-bottom: 0;
+    width: 80%;
+}
+
+.event-schedule-area .tab-area .tab-content .table thead td,
+.event-schedule-area .tab-area .tab-content .table thead th {
+    border-bottom-width: 1px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #252525;
+}
+
+.event-schedule-area .tab-area .tab-content .table td,
+.event-schedule-area .tab-area .tab-content .table th {
+    border: 1px solid #b7b7b7;
+    padding-left: 30px;
+}
+
+.event-schedule-area .tab-area .tab-content .table tbody th .heading,
+.event-schedule-area .tab-area .tab-content .table tbody td .heading {
+    font-size: 16px;
+    text-transform: capitalize;
+    margin-bottom: 16px;
+    font-weight: 500;
+    color: #252525;
+    margin-bottom: 6px;
+}
+
+.event-schedule-area .tab-area .tab-content .table tbody th span,
+.event-schedule-area .tab-area .tab-content .table tbody td span {
+    color: #4125dd;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.event-schedule-area .tab-area .tab-content .table tbody th span.date,
+.event-schedule-area .tab-area .tab-content .table tbody td span.date {
+    color: #656565;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 15px;
+}
+
+.event-schedule-area .tab-area .tab-content .table tbody th p {
+    font-size: 14px;
+    margin: 0;
+    font-weight: normal;
+}
+
+.combat-room .section-title .title-text h2 {
+    margin: 0px 0 15px;
+}
+
+.combat-room ul.custom-tab {
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 30px;
+}
+
+.combat-room ul.custom-tab li {
+    margin-right: 70px;
+    position: relative;
+}
+
+.combat-room ul.custom-tab li a {
+    color: #252525;
+    font-size: 25px;
+    line-height: 25px;
+    font-weight: 600;
+    text-transform: capitalize;
+    padding: 35px 0;
+    position: relative;
+}
+
+.combat-room ul.custom-tab li a:hover:before {
+    width: 100%;
+}
+
+.combat-room ul.custom-tab li a:before {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    content: "";
+    background: #4125dd;
+    width: 0;
+    height: 2px;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+.combat-room ul.custom-tab li a.active {
+    color: #4125dd;
+}
+
+.combat-room .primary-btn {
+    margin-top: 40px;
+}
+
+.combat-room .tab-content .table {
+    -webkit-box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0;
+}
+
+.combat-room .tab-content .table thead {
+    background-color: #007bff;
+    color: #fff;
+    font-size: 20px;
+}
+
+.combat-room .tab-content .table thead tr th {
+    padding: 20px;
+    border: 0;
+}
+
+.combat-room .tab-content .table tbody {
+    background: #fff;
+}
+
+.combat-room .tab-content .table tbody tr.inner-box {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.combat-room .tab-content .table tbody tr th {
+    border: 0;
+    padding: 30px 20px;
+    vertical-align: middle;
+}
+
+.combat-room .tab-content .table tbody tr th .player-date {
+    color: #252525;
+    text-align: center;
+}
+
+
+.combat-room .tab-content .table tbody tr td {
+    padding: 30px 20px;
+    vertical-align: middle;
+}
+
+.combat-room .tab-content .table tbody tr td .r-no span {
+    color: #252525;
+}
+
+.combat-room .tab-content .table tbody tr td .player-wrap h3 a {
+    font-size: 20px;
+    line-height: 20px;
+    color: #cf057c;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+.combat-room .tab-content .table tbody tr td .player-wrap h3 a:hover {
+    color: #4125dd;
+}
+
+
+
+.combat-room .tab-content .table tbody tr td .player-wrap .time span {
+    color: #252525;
+}
+
+.player-wrap>.meta>.race {}
+
+.player-wrap>.meta>.class {}
+
+.combat-room .tab-content .table tbody tr td .primary-btn {
+    margin-top: 0;
+    text-align: center;
+}
+
+.combat-room .tab-content .table tbody tr td .player-img img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+}
+
+.player-img {
+    position: relative;
+}
+
+.player-img i {
+    border-top-right-radius: 10px;
+    position: absolute;
+    bottom: 0px;
+    font-size: 17px;
+    color: white;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding-top: 6px;
+    cursor: pointer;
+}
+
+.player-img i.fa-mars {
+    background-color: #0000ffc2;
+}
+
+.player-img i.fa-venus {
+    background-color: #800080c2;
+}
+
+.player-img i.fa-tree {
+    background-color: #00802bc2;
+}
+
+.player-img i.fa-spinner {
+    background-color: #636363c2;
+}
+
+/* START COUNTER INPUT */
+.qty .count {
+    color: #000;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 30px;
+    padding: 0 2px;
+    min-width: 35px;
+    text-align: center;
+}
+
+.qty .plus {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    width: 30px;
+    height: 30px;
+    font: 30px/1 Arial, sans-serif;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.qty .minus {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    width: 30px;
+    height: 30px;
+    font: 30px/1 Arial, sans-serif;
+    text-align: center;
+    border-radius: 50%;
+    background-clip: padding-box;
+}
+
+div {
+    text-align: center;
+}
+
+.minus:hover {
+    background-color: #717fe0 !important;
+}
+
+.plus:hover {
+    background-color: #717fe0 !important;
+}
+
+/*Prevent text selection*/
+span {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+input {
+    border: 0;
+    width: 2%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input:disabled {
+    background-color: white;
+}
+
+/* END COUNTER INPUT */
+
+/* START TIMELINE */
+#timeline-block {
+    position: relative;
+    max-height: 40vh;
+    overflow-y: auto;
+    left: -2vw;
+}
+
+.panel-timeline {
+    width: 80%;
+    margin: 20px auto;
+    position: relative;
+}
+
+.panel-timeline:before {
+    content: "";
+    display: block;
+    width: 2px;
+    height: 100%;
+    background: rgb(0 0 0 / 48%);
+    margin: 0 0 0 -1px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+}
+
+.panel-timeline .timeline {
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.panel-timeline .timeline:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.panel-timeline .timeline-content {
+    width: 40%;
+    float: left;
+    margin: 5px 0 0 0;
+    border-radius: 6px;
+}
+
+.panel-timeline .date {
+    display: block;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #25303b;
+    padding: 15px 0;
+    margin: 0 0 0 -36px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 7px #25303b;
+}
+
+.panel-timeline .date span {
+    display: block;
+    text-align: center;
+}
+
+.panel-timeline .day,
+.panel-timeline .year {
+    font-size: 10px;
+}
+
+.panel-timeline .month {
+    font-size: 18px;
+}
+
+.panel-timeline .title {
+    padding: 15px;
+    margin: 0;
+    font-size: 20px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+}
+
+.panel-timeline .title:after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 20px;
+    right: -5px;
+    transform: rotate(-45deg);
+}
+
+.panel-timeline .description {
+    padding: 15px;
+    margin: 0;
+    font-size: 14px;
+    color: #656565;
+    background: #fff;
+    border-radius: 0 0 6px 6px;
+}
+
+.panel-timeline .timeline:nth-child(2n+2) .timeline-content {
+    float: right;
+}
+
+.panel-timeline .timeline:nth-child(2n+2) .title:after {
+    left: -5px;
+}
+
+.panel-timeline .timeline:nth-child(1) .title,
+.panel-timeline .timeline:nth-child(1) .title:after {
+    background: #9f84c4;
+}
+
+.panel-timeline .timeline:nth-child(2) .title,
+.panel-timeline .timeline:nth-child(2) .title:after {
+    background: #02a2dd;
+}
+
+.panel-timeline .timeline:nth-child(3) .title,
+.panel-timeline .timeline:nth-child(3) .title:after {
+    background: #58b25e;
+}
+
+.panel-timeline .timeline:nth-child(4) .title,
+.panel-timeline .timeline:nth-child(4) .title:after {
+    background: #eab715;
+}
+
+@media only screen and (max-width: 990px) {
+    .panel-timeline {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+
+    .panel-timeline:before,
+    .panel-timeline .date {
+        left: 6%;
+    }
+
+    .panel-timeline .timeline-content {
+        width: 85%;
+        float: right;
+    }
+
+    .panel-timeline .title:after {
+        left: -5px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+
+    .panel-timeline:before,
+    .panel-timeline .date {
+        left: 12%;
+    }
+
+    .panel-timeline .timeline-content {
+        width: 75%;
+    }
+
+    .panel-timeline .date {
+        width: 60px;
+        height: 60px;
+        margin-left: -30px;
+    }
+
+    .panel-timeline .month {
+        font-size: 14px;
+    }
+}
+
+/* TIMELINE SCROLLBAR*/
+#timeline-block::-webkit-scrollbar {
+    width: 7px;
+}
+
+#timeline-block::-webkit-scrollbar-track {
+    background: #dbdbdb73;
+    width: 7px;
+    border-radius: 100px;
+}
+
+#timeline-block::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, #708ad4 0%, #d0368a 99%);
+    border-radius: 100px;
+}
+
+/* END TIMELINE */

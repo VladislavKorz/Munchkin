@@ -7,6 +7,25 @@
 
 {% block body %}
 
+<script>
+    const roomCode = "{{ room.code }}";
+    const playerAttributesSocket = new WebSocket(`ws://{{ request.get_host }}/ws/room/${roomCode}/`);
+
+    playerAttributesSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        // Обновите атрибуты игрока на странице с использованием полученных данных
+        // Например, можно использовать jQuery для обновления DOM-элементов
+        const playerElement = $(`.player[player='${data.player}']`);
+        playerElement.find('.total').text(data.attributes.total);
+        playerElement.find('.level').text(data.attributes.level);
+        playerElement.find('.power').text(data.attributes.power);
+    };
+
+    // Здесь вы можете добавить код для отправки обновлений атрибутов на сервер
+    // и обработки изменений атрибутов игрока на клиенте
+</script>
+
+
 <div class="combat-room">
     <div class="container">
         <div class="row">
@@ -213,31 +232,9 @@
 <script>
     const changeRoomPlayer_URL = "{% url 'ajax_changeRoomPlayer' %}";
     const csrf_token = "{{ csrf_token }}";
-    function sendData(obj_dict){
-        $.ajax({
-            url: changeRoomPlayer_URL,
-            type: 'POST',
-            data: {
-                csrfmiddlewaretoken: csrf_token,
-                user_room: obj_dict.player,
-                data: JSON.stringify(obj_dict),
-            },
-            success: function (data) {
-                console.log('Okkeeeee')
-                {% comment %} gender.removeClass('fa-spinner').addClass(gender_class);
-                if (gender_val == 'M'){
-                    gender_val = 'он брутальный мужик'
-                } else {
-                    gender_val = 'она храбрая женщина'
-                }
-                mkNoti(
-                        "Смена пола",
-                        "Манчкин " + $player.find('.player-name').text() + " сменил пол, теперь " + gender_val + "!",
-                        {status: "info"}
-                    ); {% endcomment %}
-            }
-        });
-    }
+    function sendData(obj_dict) {
+        playerAttributesSocket.send(JSON.stringify(obj_dict));
+}
 </script>
 
 <script src="{% static 'room/js/playerDataUpdate.js' %}"></script>

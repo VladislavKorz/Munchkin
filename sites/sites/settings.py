@@ -32,14 +32,15 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'munchkin.qycode.ru', '192.168.0.10']
 # Application definition
 
 INSTALLED_APPS = [
+    # 'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'channels',
     'django_ckeditor_5',
+    'channels',
     'users',
     'home',
     'room',
@@ -188,7 +189,7 @@ CKEDITOR_5_CONFIGS = {
             'removeFormat', 'heading', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', 'alignment', '|',
             'outdent', 'indent', '|',
             'bold', 'italic', 'underline', 'strikethrough',  '|',
-            'bulletedList', 'numberedList', '|', 
+            'bulletedList', 'numberedList', '|',
             'blockQuote', 'link', 'insertImage', 'mediaEmbed', 'insertTable', 'code', '|',
             'sourceEditing', 'easyimage',
              ],
@@ -234,4 +235,18 @@ CKEDITOR_5_CONFIGS = {
             'reversed': 'true',
         }
     }
+}
+
+
+
+ASGI_APPLICATION = "sites.routing.application"
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
 }

@@ -1,9 +1,11 @@
 from django.contrib import admin
+
 from .models import *
+
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ["id", "update", "create"]
+    list_display = ["id", "email", "update", "create"]
     list_display_links = ["id"]
     readonly_fields = ["update", "create"]
     search_fields = []
