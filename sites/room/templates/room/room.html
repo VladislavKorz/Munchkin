@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block header %}
 <link rel="stylesheet" href="{% static 'room/css/room.css' %}">
@@ -124,53 +125,22 @@
 <div class="container" id="timeline-block">
     <div class="row">
         <div class="panel-timeline">
-            <div class="timeline">
-                <div class="timeline-content">
-                    <span class="date">
-                        <span class="month">11:45</span>
-                        <span class="year">25.12</span>
-                    </span>
-                    <h2 class="title"><span class="fa fa-chevron-up" aria-hidden="true"></span> Имя становится 7 уровнем
-                    </h2>
-                    <p class="description">Игрок ИМЯ подрался с монстром и получил +1 уровень</p>
-                </div>
-            </div>
+            {% with player_levels=room|get_room_levels %}
+                {% for level in player_levels|dictsort:"create" reversed %}
+                    <div class="timeline">
+                        <div class="timeline-content">
+                            <span class="date">
+                                <span class="month">{{ level.create.time }}</span>
+                                <span class="year">{{ level.create.date|date:"d.m"  }}</span>
+                            </span>
+                            <h2 class="title" style="background: #02a2dd;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ level.player.player.email }} теперь {{ level.leavel }} уровня
+                            </h2>
+                            <p class="description">Игрок {{ level.player.player.email }} изменил уровень</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endwith %}
 
-            <div class="timeline">
-                <div class="timeline-content">
-                    <span class="date">
-                        <span class="month">11:45</span>
-                        <span class="year">25.12</span>
-                    </span>
-                    <h2 class="title"><span class="fa fa-chevron-down"></span> Имя становится 5 уровнем</h2>
-                    <p class="description">Игрок ИМЯ проиграл битву с монстром и получил -2 уровня</p>
-                </div>
-            </div>
-
-            <div class="timeline">
-                <div class="timeline-content">
-                    <span class="date">
-                        <span class="month">11:45</span>
-                        <span class="year">25.12</span>
-                    </span>
-                    <h2 class="title"><span class="fa fa-chevron-down"></span> Имя становится 5 уровнем</h2>
-                    <p class="description">Игрок ИМЯ потерял 2 уровня.
-                    </p>
-                </div>
-            </div>
-
-            <div class="timeline">
-                <div class="timeline-content">
-                    <span class="date">
-                        <span class="month">11:45</span>
-                        <span class="year">25.12</span>
-                    </span>
-                    <h2 class="title"><span class="glyphicon glyphicon-heart-empty"></span> Имя сменил класс на Эльф
-                    </h2>
-                    <p class="description">
-                    </p>
-                </div>
-            </div>
         </div>
     </div>
 </div>
