@@ -250,3 +250,13 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+
+# CHANNELS_LAYERS = {
+#     'default': {
+#     'BACKEND': 'channels.layers.InMemoryChannelLayer'
+#     }
+# }
+
+
+TICKS_GROUP_NAME = 'plz'

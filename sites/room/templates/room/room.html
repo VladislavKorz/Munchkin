@@ -7,25 +7,6 @@
 
 {% block body %}
 
-<script>
-    const roomCode = "{{ room.code }}";
-    const playerAttributesSocket = new WebSocket(`ws://{{ request.get_host }}/ws/room/${roomCode}/`);
-
-    playerAttributesSocket.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-        // Обновите атрибуты игрока на странице с использованием полученных данных
-        // Например, можно использовать jQuery для обновления DOM-элементов
-        const playerElement = $(`.player[player='${data.player}']`);
-        playerElement.find('.total').text(data.attributes.total);
-        playerElement.find('.level').text(data.attributes.level);
-        playerElement.find('.power').text(data.attributes.power);
-    };
-
-    // Здесь вы можете добавить код для отправки обновлений атрибутов на сервер
-    // и обработки изменений атрибутов игрока на клиенте
-</script>
-
-
 <div class="combat-room">
     <div class="container">
         <div class="row">
@@ -85,8 +66,6 @@
                                                     <div class="race px-2">
                                                         <div class="d-flex align-items-center">
                                                             <i class="fa fa-user" aria-hidden="true"></i>
-
-
                                                         <a href="#" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                             {{ player.get_racer }}
                                                             {% comment %} {{ player.playerClass.last()}} {% endcomment %}
@@ -97,17 +76,14 @@
                                                             {% endfor %}
 
                                                         </ul>
-
-                                                    </.div>
+                                                    {% comment %} </div> {% endcomment %}
                                                     {% if player.get_class %}
                                                     <div class="class px-2">
                                                         <div class="btn-group">
-
-                                                                <i class="fa fa-gamepad" aria-hidden="true"></i>
+                                                            <i class="fa fa-gamepad" aria-hidden="true"></i>
                                                         </div>
                                                             <a href="#" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                                                 {{ player.get_class }}
-                                                                {% comment %} {{ player.playerClass.last()}} {% endcomment %}
                                                             </a>
                                                             <ul class="dropdown-menu">
                                                                 {% for player_class in classes %}
@@ -207,9 +183,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="playerDataEditModalLabel">Контроль уровня и мощности для <span class='name'></span></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                {% comment %} <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-                </button>
+                </button> {% endcomment %}
             </div>
             <div class="modal-body">
                 <h3 class="my-3"><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total'>16</span></h3>
@@ -245,9 +221,31 @@
 <script>
     const changeRoomPlayer_URL = "{% url 'ajax_changeRoomPlayer' %}";
     const csrf_token = "{{ csrf_token }}";
-    function sendData(obj_dict) {
-        playerAttributesSocket.send(JSON.stringify(obj_dict));
-}
+    function sendData(obj_dict){
+        $.ajax({
+            url: changeRoomPlayer_URL,
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: csrf_token,
+                user_room: obj_dict.player,
+                data: JSON.stringify(obj_dict),
+            },
+            success: function (data) {
+                console.log('Okkeeeee')
+                {% comment %} gender.removeClass('fa-spinner').addClass(gender_class);
+                if (gender_val == 'M'){
+                    gender_val = 'он брутальный мужик'
+                } else {
+                    gender_val = 'она храбрая женщина'
+                }
+                mkNoti(
+                        "Смена пола",
+                        "Манчкин " + $player.find('.player-name').text() + " сменил пол, теперь " + gender_val + "!",
+                        {status: "info"}
+                    ); {% endcomment %}
+            }
+        });
+    }
 </script>
 
 <script src="{% static 'room/js/playerDataUpdate.js' %}"></script>
