@@ -1,8 +1,10 @@
-from django.http import HttpResponse, HttpResponseNotFound
-from loguru import logger
 import json
 
+from django.http import HttpResponse, HttpResponseNotFound
+from loguru import logger
+
 from .models import *
+
 
 def changeRoomPlayerAjax(request):
     if request.POST:
@@ -22,9 +24,9 @@ def changeRoomPlayerAjax(request):
             if data.get('power') or data.get('level'):
                 leavel = PlayerLeavel.objects.filter(player=user_room).first()
                 power = PlayerPower.objects.filter(player=user_room).first()
-                if data.get('level') and data.get('level') != leavel.leavel:
+                if str(data.get('level')) != str(leavel.leavel):
                     PlayerLeavel.objects.create(player=user_room, leavel = data.get('level'))
-                if data.get('power') and data.get('power') != power.power:
+                if str(data.get('power')) != str(power.power):
                     PlayerPower.objects.create(player=user_room, power = data.get('power'))
 
 

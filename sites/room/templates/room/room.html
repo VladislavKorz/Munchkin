@@ -125,19 +125,57 @@
 <div class="container" id="timeline-block">
     <div class="row">
         <div class="panel-timeline">
-            {% with player_levels=room|get_room_levels %}
-                {% for level in player_levels|dictsort:"create" reversed %}
-                    <div class="timeline">
-                        <div class="timeline-content">
-                            <span class="date">
-                                <span class="month">{{ level.create.time }}</span>
-                                <span class="year">{{ level.create.date|date:"d.m"  }}</span>
-                            </span>
-                            <h2 class="title" style="background: #02a2dd;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ level.player.player.email }} теперь {{ level.leavel }} уровня
-                            </h2>
-                            <p class="description">Игрок {{ level.player.player.email }} изменил уровень</p>
-                        </div>
-                    </div>
+            {% with player_items=room|get_room_levels %}
+                {% for item in player_items|dictsort:"create" reversed %}
+                    {% if item|get_item_type == 'PlayerLeavel' %}
+                        <div class="timeline">
+                                        <div class="timeline-content">
+                                            <span class="date">
+                                                <span class="month">{{ item.create.time }}</span>
+                                                <span class="year">{{ item.create.date|date:"d.m"  }}</span>
+                                            </span>
+                                            <h2 class="title" style="background: #02a2dd;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь {{ item.leavel }} уровня
+                                            </h2>
+                                            <p class="description">Игрок {{ item.player.player.email }} изменил уровень </p>
+                                        </div>
+                                    </div>
+                    {% elif item|get_item_type == 'PlayerPower' %}
+                        <div class="timeline">
+                                        <div class="timeline-content">
+                                            <span class="date">
+                                                <span class="month">{{ item.create.time }}</span>
+                                                <span class="year">{{ item.create.date|date:"d.m"  }}</span>
+                                            </span>
+                                            <h2 class="title" style="background: #9f84c4;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь {{ item.power }} мощности
+                                            </h2>
+                                            <p class="description">Игрок {{ item.player.player.email }} изменил мощность</p>
+                                        </div>
+                                    </div>
+                    {% elif item|get_item_type == 'PlayerClass' %}
+                        <div class="timeline">
+                                        <div class="timeline-content">
+                                            <span class="date">
+                                                <span class="month">{{ item.create.time }}</span>
+                                                <span class="year">{{ item.create.date|date:"d.m"  }}</span>
+                                            </span>
+                                            <h2 class="title" style="background: #58b25e;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь класса {{ item.get_value_display }}
+                                            </h2>
+                                            <p class="description">Игрок {{ item.player.player.email }} изменил класс</p>
+                                        </div>
+                                    </div>
+                    {% elif item|get_item_type == 'PlayerRace' %}
+                        <div class="timeline">
+                                        <div class="timeline-content">
+                                            <span class="date">
+                                                <span class="month">{{ item.create.time }}</span>
+                                                <span class="year">{{ item.create.date|date:"d.m"  }}</span>
+                                            </span>
+                                            <h2 class="title" style="background: #eab715;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь расы {{ item.get_value_display }}
+                                            </h2>
+                                            <p class="description">Игрок {{ item.player.player.email }} изменил расу</p>
+                                        </div>
+                                    </div>
+                    {% endif %}
                 {% endfor %}
             {% endwith %}
 

@@ -53,6 +53,7 @@ def update_player_class(request, player_id, class_value):
     player_class = player.playerClass.last()
 
     # Установите новое значение класса игрока
+    PlayerClass.objects.create(player=player, value=class_value)
     player_class.value = class_value
     player_class.save()
 
@@ -65,6 +66,7 @@ def update_player_race(request, player_id, race_value):
     player_race = player.playerRace.last()
 
     # Установите новое значение класса игрока
+    PlayerRace.objects.create(player=player, value=race_value)
     player_race.value = race_value
     player_race.save()
 
