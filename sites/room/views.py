@@ -54,8 +54,8 @@ def update_player_class(request, player_id, class_value):
 
     # Установите новое значение класса игрока
     PlayerClass.objects.create(player=player, value=class_value)
-    player_class.value = class_value
-    player_class.save()
+    # player_class.value = class_value
+    # player_class.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -67,7 +67,7 @@ def update_player_race(request, player_id, race_value):
 
     # Установите новое значение класса игрока
     PlayerRace.objects.create(player=player, value=race_value)
-    player_race.value = race_value
-    player_race.save()
+    # player_race.value = race_value
+    # player_race.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
