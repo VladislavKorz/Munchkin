@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'munchkin.qycode.ru', '192.168.0.10']
 # Application definition
 
 INSTALLED_APPS = [
-    # 'daphne',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'channels',
     'users',
     'home',
-    'room',
+    'room.apps.RoomConfig',
 ]
 
 MIDDLEWARE = [
@@ -239,7 +239,7 @@ CKEDITOR_5_CONFIGS = {
 
 
 
-ASGI_APPLICATION = "sites.routing.application"
+ASGI_APPLICATION = "sites.asgi.application"
 
 
 CHANNEL_LAYERS = {
@@ -259,4 +259,7 @@ CHANNEL_LAYERS = {
 # }
 
 
-TICKS_GROUP_NAME = 'plz'
+RACE_GROUP_NAME = 'new_race'
+CLASS_GROUP_NAME = 'new_class'
+LEVEL_GROUP_NAME = 'new_level'
+POWER_GROUP_NAME= 'new_power'

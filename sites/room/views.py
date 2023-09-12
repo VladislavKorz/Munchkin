@@ -1,3 +1,8 @@
+import json
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse, HttpResponseRedirect
@@ -8,6 +13,22 @@ from loguru import logger
 from .models import *
 from .models import PlayerClass
 
+
+def broadcast_race(race, player_id):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        settings.RACE_GROUP_NAME, {
+            "type": 'new_race',
+            "content": json.dumps({'race': race, 'playerId': player_id}),
+        })
+
+def broadcast_class(player_class, player_id):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        settings.CLASS_GROUP_NAME, {
+            "type": 'new_class',
+            "content": json.dumps({'class': player_class, 'playerId': player_id}),
+        })
 
 @login_required
 def CreateRoomViews(request):
@@ -48,9 +69,9 @@ def RoomViews(request, room_code=None):
 
 
 @login_required
-def update_player_class(request, player_id, class_value):
+def update_player_class(request, player_id, class_value, class_name):
     player = RoomPlayer.objects.get(pk=player_id)
-    player_class = player.playerClass.last()
+    broadcast_class(class_name, player_id)
 
     # Установите новое значение класса игрока
     PlayerClass.objects.create(player=player, value=class_value)
@@ -61,9 +82,9 @@ def update_player_class(request, player_id, class_value):
 
 
 @login_required
-def update_player_race(request, player_id, race_value):
+def update_player_race(request, player_id, race_value, race_name):
     player = RoomPlayer.objects.get(pk=player_id)
-    player_race = player.playerRace.last()
+    broadcast_race(race_name, player_id)
 
     # Установите новое значение класса игрока
     PlayerRace.objects.create(player=player, value=race_value)

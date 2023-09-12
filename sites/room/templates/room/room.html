@@ -8,6 +8,8 @@
 
 {% block body %}
 
+
+
 <div class="combat-room">
     <div class="container">
         <div class="row">
@@ -41,8 +43,8 @@
                                         <th scope="row">
                                             <div class="player-date" data-toggle="modal" data-target="#playerDataEditModal">
                                                 <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total'>{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
-                                                <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level'>{{player.get_leavel}}</span> / <i
-                                                        class="fa fa-gavel" aria-hidden="true"></i> <span class='power'>{{player.get_power}}</span></p>
+                                                <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level' data-player-id-level="{{ player.pk }}">{{player.get_leavel}}</span>
+                                                        <i class="fa fa-gavel" aria-hidden="true"></i> <span class='power' data-player-id-power="{{ player.pk }}">{{player.get_power}}</span></p>
                                             </div>
                                         </th>
                                         <td>
@@ -67,13 +69,13 @@
                                                     <div class="race px-2">
                                                         <div class="d-flex align-items-center">
                                                             <i class="fa fa-user" aria-hidden="true"></i>
-                                                        <a href="#" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <a href="#" class="btn btn-link dropdown-toggle player-race" data-bs-toggle="dropdown" aria-expanded="false" data-player-id="{{ player.pk }}">
                                                             {{ player.get_racer }}
-                                                            {% comment %} {{ player.playerClass.last()}} {% endcomment %}
                                                         </a>
+
                                                         <ul class="dropdown-menu">
                                                             {% for player_race in races %}
-                                                                <li><a class="dropdown-item" href="{% url 'update_player_race' player.pk player_race.0 %}">{{ player_race.1 }}</a></li>
+                                                                <li><a class="dropdown-item" href="{% url 'update_player_race' player.pk player_race.0 player_race.1 %}">{{ player_race.1 }}</a></li>
                                                             {% endfor %}
 
                                                         </ul>
@@ -83,13 +85,13 @@
                                                         <div class="btn-group">
                                                             <i class="fa fa-gamepad" aria-hidden="true"></i>
                                                         </div>
-                                                            <a href="#" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <a href="#" class="btn btn-link dropdown-toggle player-class" data-bs-toggle="dropdown" aria-expanded="false"  data-player-id-2="{{ player.pk }}">
                                                                 {{ player.get_class }}
                                                             </a>
                                                             <ul class="dropdown-menu">
                                                                 {% for player_class in classes %}
                                                                     {% comment %} <li><a class="dropdown-item" href="#">{{ player_class.0 }}</a></li> {% endcomment %}
-                                                                    <li><a class="dropdown-item" href="{% url 'update_player_class' player.pk player_class.0 %}">{{ player_class.1 }}</a></li>
+                                                                    <li><a class="dropdown-item" href="{% url 'update_player_class' player.pk player_class.0 player_class.1 %}">{{ player_class.1 }}</a></li>
                                                                 {% endfor %}
 
                                                             </ul>
@@ -256,6 +258,72 @@
     }
 </script>
 
+
+<script language="javascript">
+    var ws_url = 'ws://' + window.location.host + '/ws/race/';
+    var raceSocket = new WebSocket(ws_url);
+
+    raceSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        var playerRaceElement = document.querySelector(`[data-player-id="${data.playerId}"]`);
+        if (playerRaceElement) {
+            playerRaceElement.textContent = data.race;
+        }
+    };
+</script>
+
+
+<script language="javascript">
+    var ws_url = 'ws://' + window.location.host + '/ws/class/';
+    var classSocket = new WebSocket(ws_url);
+
+    classSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        var playerClassElement = document.querySelector(`[data-player-id-2="${data.playerId}"]`);
+        if (playerClassElement) {
+            playerClassElement.textContent = data.class;
+        }
+    };
+</script>
+
+
+<script language="javascript">
+    var ws_url = 'ws://' + window.location.host + '/ws/level/';
+    var levelSocket = new WebSocket(ws_url);
+
+    levelSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+
+            // Найти элемент с нужным игроком
+        var playerElement = document.querySelector(`[data-player-id-level="${data.playerId}"]`);
+
+        if (playerElement) {
+            playerElement.textContent = data.level;
+        }
+
+    };
+</script>
+
+
+<script language="javascript">
+    var ws_url = 'ws://' + window.location.host + '/ws/power/';
+    var powerSocket = new WebSocket(ws_url);
+
+    powerSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+
+            // Найти элемент с нужным игроком
+        var playerPowerElement = document.querySelector(`[data-player-id-power="${data.playerId}"]`);
+
+        if (playerPowerElement) {
+            playerPowerElement.textContent = data.power;
+        }
+
+    };
+</script>
+
+
 <script src="{% static 'room/js/playerDataUpdate.js' %}"></script>
 <script src="{% static 'room/js/playerGenderChangingAjax.js' %}"></script>
+
 {% endblock %}
