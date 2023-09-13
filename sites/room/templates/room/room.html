@@ -42,19 +42,19 @@
                                     <tr class="inner-box player" player='{{ player.pk }}'>
                                         <th scope="row">
                                             <div class="player-date" data-toggle="modal" data-target="#playerDataEditModal">
-                                                <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total'>{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
+                                                <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total' data-player-id-total1="{{ player.pk }}">{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
                                                 <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level' data-player-id-level="{{ player.pk }}">{{player.get_leavel}}</span>
                                                         <i class="fa fa-gavel" aria-hidden="true"></i> <span class='power' data-player-id-power="{{ player.pk }}">{{player.get_power}}</span></p>
                                             </div>
                                         </th>
                                         <td>
-                                            <div class="player-img player-gender">
+                                            <div class="player-img player-gender" data-player-id-gender="{{ player.pk }}">
                                                 {% if player.gender == 'M' %}
-                                                <i class="fa fa-mars" aria-hidden="true"></i>
+                                                <i class="fa fa-mars" gender ="true" aria-hidden="true"></i>
                                                 {% elif player.gender == 'F' %}
-                                                <i class="fa fa-venus" aria-hidden="true"></i>
+                                                <i class="fa fa-venus" gender ="true" aria-hidden="true"></i>
                                                 {% else %}
-                                                <i class="fa fa-tree" aria-hidden="true"></i>
+                                                <i class="fa fa-tree" gender ="true" aria-hidden="true"></i>
                                                 {% endif %}
                                                 <img src="{{ player.player.get_photo_url }}"
                                                     alt="Аватар пользователя {{player.player.user}}" />
@@ -293,12 +293,18 @@
 
     levelSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
+        console.log(data)
 
             // Найти элемент с нужным игроком
         var playerElement = document.querySelector(`[data-player-id-level="${data.playerId}"]`);
+        var playerTotal = document.querySelector(`[data-player-id-total1="${data.playerId}"]`);
 
         if (playerElement) {
             playerElement.textContent = data.level;
+        }
+
+        if (playerTotal) {
+            playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
         }
 
     };
@@ -311,14 +317,49 @@
 
     powerSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
+        console.log(data)
 
             // Найти элемент с нужным игроком
         var playerPowerElement = document.querySelector(`[data-player-id-power="${data.playerId}"]`);
+        var playerTotal = document.querySelector(`[data-player-id-total1="${data.playerId}"]`);
 
         if (playerPowerElement) {
             playerPowerElement.textContent = data.power;
         }
 
+        if (playerTotal) {
+            playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
+        }
+
+    };
+</script>
+
+
+<script language="javascript">
+    var ws_url = 'ws://' + window.location.host + '/ws/gender/';
+    var gendersSocket = new WebSocket(ws_url);
+
+    gendersSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        console.log(data);
+
+        // Найдем элемент с помощью атрибута data-player-id
+        var playerElement = document.querySelector(`[data-player-id-gender="${data.playerId}"]`);
+
+        // Найдем элемент иконки гендера
+        var genderIcon = playerElement.querySelector(`[gender='true']`);
+
+        // Обновим иконку гендера в зависимости от полученного гендера
+        if (data.gender === 'M') {
+            genderIcon.classList.add('fa-mars');
+            genderIcon.classList.remove('fa-venus', 'fa-tree');
+        } else if (data.gender === 'F') {
+            genderIcon.classList.add('fa-venus');
+            genderIcon.classList.remove('fa-mars', 'fa-tree');
+        } else {
+            genderIcon.classList.add('fa-tree');
+            genderIcon.classList.remove('fa-mars', 'fa-venus');
+        }
     };
 </script>
 
