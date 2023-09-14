@@ -356,6 +356,14 @@
         // Добавляем новый блок таймлайна к контейнеру таймлайнов
         var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
         timelineContainer.prepend(newTimelineBlock);
+
+        // Уведомление о новом событии
+        mkNoti(
+            descriptionElement.textContent,
+            "Манчкин " + data.username + " сменил класс, теперь он стал " + data.class + "!",
+            {status: "info"}
+        );
+
     };
 </script>
 
@@ -408,6 +416,13 @@
         var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
         timelineContainer.prepend(newTimelineBlock);
 
+        // Уведомление о новом событии
+        mkNoti(
+            descriptionElement.textContent,
+            "Манчкин " + data.username + " сменил уровень, теперь он стал " + data.level + "!",
+            {status: "info"}
+        );
+
     };
 </script>
 
@@ -459,6 +474,14 @@
         // Добавляем новый блок таймлайна к контейнеру таймлайнов
         var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
         timelineContainer.prepend(newTimelineBlock);
+
+        // Уведомление о новом событии
+        mkNoti(
+            descriptionElement.textContent,
+            "Манчкин " + data.username + " сменил мощность, теперь он стал " + data.power + "!",
+            {status: "info"}
+        );
+
     };
 </script>
 
@@ -487,6 +510,14 @@
             genderIcon.classList.add('fa-tree');
             genderIcon.classList.remove('fa-mars', 'fa-venus');
         }
+
+        // Уведомление о новом событии
+        mkNoti(
+            "Смена пола",
+            "Манчкин " + data.username + " сменил пол, теперь его пол " + data.gender_display + "!",
+            {status: "info"}
+        );
+
     };
 </script>
 

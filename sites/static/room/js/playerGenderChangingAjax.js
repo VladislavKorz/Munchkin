@@ -21,16 +21,16 @@ $('.player-gender').on('click', function () {
         },
         success: function (data) {
             gender.removeClass('fa-spinner').addClass(gender_class);
-            if (gender_val == 'M'){
+            if (gender_val == 'M') {
                 gender_val = 'он брутальный мужик'
             } else {
                 gender_val = 'она храбрая женщина'
             }
-            mkNoti(
-                    "Смена пола",
-                    "Манчкин " + $player.find('.player-name').text() + " сменил пол, теперь " + gender_val + "!",
-                    {status: "info"}
-                );
+            // mkNoti(
+            //     "Смена пола",
+            //     "Манчкин " + $player.find('.player-name').text() + " сменил пол, теперь " + gender_val + "!",
+            //     { status: "info" }
+            // );
         }
     });
 });

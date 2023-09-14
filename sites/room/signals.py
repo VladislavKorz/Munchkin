@@ -45,5 +45,5 @@ def room_player_gender_changed(sender, instance, **kwargs):
             async_to_sync(channel_layer.group_send)(
                 settings.GENDER_GROUP_NAME, {
                     "type": 'new_gender',
-                    "content": json.dumps({'gender': instance.gender, 'playerId': instance.id}),
+                    "content": json.dumps({'gender': instance.gender, 'playerId': instance.id, 'username': instance.player.username, 'gender_display': instance.get_gender_display()}),
                 })
