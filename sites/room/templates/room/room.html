@@ -304,8 +304,14 @@
         newTimelineBlock.appendChild(newTimelineContent);
         // Добавляем новый блок таймлайна к контейнеру таймлайнов
         var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        document.body.appendChild(newTimelineBlock);
+        timelineContainer.prepend(newTimelineBlock);
 
+        // Уведомление о новом событии
+        mkNoti(
+            descriptionElement.textContent,
+            "Манчкин " + data.username + " сменил рассу, теперь он стал " + data.race + "!",
+            {status: "info"}
+        );
     };
 
 </script>
@@ -349,8 +355,7 @@
         newTimelineBlock.appendChild(newTimelineContent);
         // Добавляем новый блок таймлайна к контейнеру таймлайнов
         var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        document.body.appendChild(newTimelineBlock);
-
+        timelineContainer.prepend(newTimelineBlock);
     };
 </script>
 
@@ -401,7 +406,7 @@
         newTimelineBlock.appendChild(newTimelineContent);
         // Добавляем новый блок таймлайна к контейнеру таймлайнов
         var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        document.body.appendChild(newTimelineBlock);
+        timelineContainer.prepend(newTimelineBlock);
 
     };
 </script>
@@ -453,8 +458,7 @@
         newTimelineBlock.appendChild(newTimelineContent);
         // Добавляем новый блок таймлайна к контейнеру таймлайнов
         var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        document.body.appendChild(newTimelineBlock);
-
+        timelineContainer.prepend(newTimelineBlock);
     };
 </script>
 
