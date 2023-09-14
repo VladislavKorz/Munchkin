@@ -29,10 +29,10 @@ class CustomUser(AbstractUser):
     )
 
 
-    username = None
+    username = models.CharField('username', max_length=30, unique=True)
     email = models.EmailField('email address', unique=True)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
     objects = CustomUserManager()
 
     name = models.CharField('имя пользователя', max_length=64, blank=True, null=True)

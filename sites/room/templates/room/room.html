@@ -59,6 +59,9 @@
                                                 <img src="{{ player.player.get_photo_url }}"
                                                     alt="Аватар пользователя {{player.player.user}}" />
                                             </div>
+                                            <div class="username">
+                                                <p>{{ player.player.username }}</p>
+                                            </div>
                                         </td>
                                         <td>
                                             <div class="player-wrap">
@@ -136,9 +139,9 @@
                                                 <span class="month">{{ item.create.time }}</span>
                                                 <span class="year">{{ item.create.date|date:"d.m"  }}</span>
                                             </span>
-                                            <h2 class="title" style="background: #02a2dd;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь {{ item.leavel }} уровня
+                                            <h2 class="title" style="background: #02a2dd;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.username }} теперь {{ item.leavel }} уровня
                                             </h2>
-                                            <p class="description">Игрок {{ item.player.player.email }} изменил уровень </p>
+                                            <p class="description">Игрок {{ item.player.player.username }} изменил уровень </p>
                                         </div>
                                     </div>
                     {% elif item|get_item_type == 'PlayerPower' %}
@@ -148,9 +151,9 @@
                                                 <span class="month">{{ item.create.time }}</span>
                                                 <span class="year">{{ item.create.date|date:"d.m"  }}</span>
                                             </span>
-                                            <h2 class="title" style="background: #9f84c4;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь {{ item.power }} мощности
+                                            <h2 class="title" style="background: #9f84c4;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.username }} теперь {{ item.power }} мощности
                                             </h2>
-                                            <p class="description">Игрок {{ item.player.player.email }} изменил мощность</p>
+                                            <p class="description">Игрок {{ item.player.player.username }} изменил мощность</p>
                                         </div>
                                     </div>
                     {% elif item|get_item_type == 'PlayerClass' %}
@@ -160,9 +163,9 @@
                                                 <span class="month">{{ item.create.time }}</span>
                                                 <span class="year">{{ item.create.date|date:"d.m"  }}</span>
                                             </span>
-                                            <h2 class="title" style="background: #58b25e;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь класса {{ item.get_value_display }}
+                                            <h2 class="title" style="background: #58b25e;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.username }} теперь класса {{ item.get_value_display }}
                                             </h2>
-                                            <p class="description">Игрок {{ item.player.player.email }} изменил класс</p>
+                                            <p class="description">Игрок {{ item.player.player.username }} изменил класс</p>
                                         </div>
                                     </div>
                     {% elif item|get_item_type == 'PlayerRace' %}
@@ -172,9 +175,9 @@
                                                 <span class="month">{{ item.create.time }}</span>
                                                 <span class="year">{{ item.create.date|date:"d.m"  }}</span>
                                             </span>
-                                            <h2 class="title" style="background: #eab715;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.email }} теперь расы {{ item.get_value_display }}
+                                            <h2 class="title" style="background: #eab715;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.username }} теперь расы {{ item.get_value_display }}
                                             </h2>
-                                            <p class="description">Игрок {{ item.player.player.email }} изменил расу</p>
+                                            <p class="description">Игрок {{ item.player.player.username }} изменил расу</p>
                                         </div>
                                     </div>
                     {% endif %}
@@ -264,12 +267,47 @@
     var raceSocket = new WebSocket(ws_url);
 
     raceSocket.onmessage = function(event) {
+
+
         var data = JSON.parse(event.data);
         var playerRaceElement = document.querySelector(`[data-player-id="${data.playerId}"]`);
         if (playerRaceElement) {
             playerRaceElement.textContent = data.race;
         }
+
+
+        // Создаем новый блок таймлайна
+        var newTimelineBlock = document.createElement('div');
+        newTimelineBlock.classList.add('timeline');
+        var newTimelineContent = document.createElement('div');
+        newTimelineContent.classList.add('timeline-content');
+        var dateElement = document.createElement('span');
+        dateElement.classList.add('date');
+        var monthElement = document.createElement('span');
+        monthElement.classList.add('month');
+        monthElement.textContent = data.date;
+        var yearElement = document.createElement('span');
+        yearElement.classList.add('year');
+        yearElement.textContent = data.time;
+        dateElement.appendChild(monthElement);
+        dateElement.appendChild(yearElement);
+        var titleElement = document.createElement('h2');
+        titleElement.classList.add('title');
+        titleElement.style.background = '#eab715';
+        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь расы ' + data.race;
+        var descriptionElement = document.createElement('p');
+        descriptionElement.classList.add('description');
+        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил расу';
+        newTimelineContent.appendChild(dateElement);
+        newTimelineContent.appendChild(titleElement);
+        newTimelineContent.appendChild(descriptionElement);
+        newTimelineBlock.appendChild(newTimelineContent);
+        // Добавляем новый блок таймлайна к контейнеру таймлайнов
+        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+        document.body.appendChild(newTimelineBlock);
+
     };
+
 </script>
 
 
@@ -283,6 +321,36 @@
         if (playerClassElement) {
             playerClassElement.textContent = data.class;
         }
+
+        var newTimelineBlock = document.createElement('div');
+        newTimelineBlock.classList.add('timeline');
+        var newTimelineContent = document.createElement('div');
+        newTimelineContent.classList.add('timeline-content');
+        var dateElement = document.createElement('span');
+        dateElement.classList.add('date');
+        var monthElement = document.createElement('span');
+        monthElement.classList.add('month');
+        monthElement.textContent = data.date;
+        var yearElement = document.createElement('span');
+        yearElement.classList.add('year');
+        yearElement.textContent = data.time;
+        dateElement.appendChild(monthElement);
+        dateElement.appendChild(yearElement);
+        var titleElement = document.createElement('h2');
+        titleElement.classList.add('title');
+        titleElement.style.background = '#58b25e';
+        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь класса ' + data.class;
+        var descriptionElement = document.createElement('p');
+        descriptionElement.classList.add('description');
+        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил класс';
+        newTimelineContent.appendChild(dateElement);
+        newTimelineContent.appendChild(titleElement);
+        newTimelineContent.appendChild(descriptionElement);
+        newTimelineBlock.appendChild(newTimelineContent);
+        // Добавляем новый блок таймлайна к контейнеру таймлайнов
+        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+        document.body.appendChild(newTimelineBlock);
+
     };
 </script>
 
@@ -293,7 +361,6 @@
 
     levelSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
-        console.log(data)
 
             // Найти элемент с нужным игроком
         var playerElement = document.querySelector(`[data-player-id-level="${data.playerId}"]`);
@@ -307,6 +374,35 @@
             playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
         }
 
+        var newTimelineBlock = document.createElement('div');
+        newTimelineBlock.classList.add('timeline');
+        var newTimelineContent = document.createElement('div');
+        newTimelineContent.classList.add('timeline-content');
+        var dateElement = document.createElement('span');
+        dateElement.classList.add('date');
+        var monthElement = document.createElement('span');
+        monthElement.classList.add('month');
+        monthElement.textContent = data.date;
+        var yearElement = document.createElement('span');
+        yearElement.classList.add('year');
+        yearElement.textContent = data.time;
+        dateElement.appendChild(monthElement);
+        dateElement.appendChild(yearElement);
+        var titleElement = document.createElement('h2');
+        titleElement.classList.add('title');
+        titleElement.style.background = '#02a2dd';
+        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь ' + data.level + ' уровня';
+        var descriptionElement = document.createElement('p');
+        descriptionElement.classList.add('description');
+        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил уровень';
+        newTimelineContent.appendChild(dateElement);
+        newTimelineContent.appendChild(titleElement);
+        newTimelineContent.appendChild(descriptionElement);
+        newTimelineBlock.appendChild(newTimelineContent);
+        // Добавляем новый блок таймлайна к контейнеру таймлайнов
+        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+        document.body.appendChild(newTimelineBlock);
+
     };
 </script>
 
@@ -317,7 +413,6 @@
 
     powerSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
-        console.log(data)
 
             // Найти элемент с нужным игроком
         var playerPowerElement = document.querySelector(`[data-player-id-power="${data.playerId}"]`);
@@ -331,6 +426,35 @@
             playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
         }
 
+        var newTimelineBlock = document.createElement('div');
+        newTimelineBlock.classList.add('timeline');
+        var newTimelineContent = document.createElement('div');
+        newTimelineContent.classList.add('timeline-content');
+        var dateElement = document.createElement('span');
+        dateElement.classList.add('date');
+        var monthElement = document.createElement('span');
+        monthElement.classList.add('month');
+        monthElement.textContent = data.date;
+        var yearElement = document.createElement('span');
+        yearElement.classList.add('year');
+        yearElement.textContent = data.time;
+        dateElement.appendChild(monthElement);
+        dateElement.appendChild(yearElement);
+        var titleElement = document.createElement('h2');
+        titleElement.classList.add('title');
+        titleElement.style.background = '#9f84c4';
+        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь ' + data.power + ' мощности';
+        var descriptionElement = document.createElement('p');
+        descriptionElement.classList.add('description');
+        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил мощность';
+        newTimelineContent.appendChild(dateElement);
+        newTimelineContent.appendChild(titleElement);
+        newTimelineContent.appendChild(descriptionElement);
+        newTimelineBlock.appendChild(newTimelineContent);
+        // Добавляем новый блок таймлайна к контейнеру таймлайнов
+        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+        document.body.appendChild(newTimelineBlock);
+
     };
 </script>
 
@@ -341,7 +465,6 @@
 
     gendersSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
-        console.log(data);
 
         // Найдем элемент с помощью атрибута data-player-id
         var playerElement = document.querySelector(`[data-player-id-gender="${data.playerId}"]`);

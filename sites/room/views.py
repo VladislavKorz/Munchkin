@@ -14,20 +14,20 @@ from .models import *
 from .models import PlayerClass
 
 
-def broadcast_race(race, player_id):
+def broadcast_race(race, player_id, username, date, time):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         settings.RACE_GROUP_NAME, {
             "type": 'new_race',
-            "content": json.dumps({'race': race, 'playerId': player_id}),
+            "content": json.dumps({'race': race, 'playerId': player_id, 'username': username, 'date': date, 'time': time}),
         })
 
-def broadcast_class(player_class, player_id):
+def broadcast_class(player_class, player_id, username, date, time):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         settings.CLASS_GROUP_NAME, {
             "type": 'new_class',
-            "content": json.dumps({'class': player_class, 'playerId': player_id}),
+            "content": json.dumps({'class': player_class, 'playerId': player_id, 'username': username, 'date': date, 'time': time}),
         })
 
 @login_required
@@ -71,10 +71,11 @@ def RoomViews(request, room_code=None):
 @login_required
 def update_player_class(request, player_id, class_value, class_name):
     player = RoomPlayer.objects.get(pk=player_id)
-    broadcast_class(class_name, player_id)
 
     # Установите новое значение класса игрока
-    PlayerClass.objects.create(player=player, value=class_value)
+    player_class = PlayerClass.objects.create(player=player, value=class_value)
+    created_at = player_class.create
+    broadcast_class(class_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"))
     # player_class.value = class_value
     # player_class.save()
 
@@ -84,10 +85,11 @@ def update_player_class(request, player_id, class_value, class_name):
 @login_required
 def update_player_race(request, player_id, race_value, race_name):
     player = RoomPlayer.objects.get(pk=player_id)
-    broadcast_race(race_name, player_id)
 
     # Установите новое значение класса игрока
-    PlayerRace.objects.create(player=player, value=race_value)
+    race = PlayerRace.objects.create(player=player, value=race_value)
+    created_at = race.create
+    broadcast_race(race_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"))
     # player_race.value = race_value
     # player_race.save()
 
