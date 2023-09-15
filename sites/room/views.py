@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from loguru import logger
@@ -72,12 +72,9 @@ def RoomViews(request, room_code=None):
 def update_player_class(request, player_id, class_value, class_name):
     player = RoomPlayer.objects.get(pk=player_id)
 
-    # Установите новое значение класса игрока
     player_class = PlayerClass.objects.create(player=player, value=class_value)
     created_at = player_class.create
     broadcast_class(class_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"))
-    # player_class.value = class_value
-    # player_class.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -86,11 +83,9 @@ def update_player_class(request, player_id, class_value, class_name):
 def update_player_race(request, player_id, race_value, race_name):
     player = RoomPlayer.objects.get(pk=player_id)
 
-    # Установите новое значение класса игрока
     race = PlayerRace.objects.create(player=player, value=race_value)
     created_at = race.create
     broadcast_race(race_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"))
-    # player_race.value = race_value
-    # player_race.save()
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return JsonResponse({'message': 'Данные успешно обновлены'})

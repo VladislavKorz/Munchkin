@@ -137,7 +137,7 @@
                                         <div class="timeline-content">
                                             <span class="date">
                                                 <span class="month">{{ item.create.time }}</span>
-                                                <span class="year">{{ item.create.date|date:"d.m"  }}</span>
+                                                <span class="year">{{ item.create.date|date:"d.m" }}</span>
                                             </span>
                                             <h2 class="title" style="background: #02a2dd;"><span class="fa fa-chevron-up" aria-hidden="true"></span> {{ item.player.player.username }} теперь {{ item.leavel }} уровня
                                             </h2>
@@ -285,10 +285,10 @@
         dateElement.classList.add('date');
         var monthElement = document.createElement('span');
         monthElement.classList.add('month');
-        monthElement.textContent = data.date;
+        monthElement.textContent = data.time;
         var yearElement = document.createElement('span');
         yearElement.classList.add('year');
-        yearElement.textContent = data.time;
+        yearElement.textContent = data.date;
         dateElement.appendChild(monthElement);
         dateElement.appendChild(yearElement);
         var titleElement = document.createElement('h2');
@@ -336,10 +336,10 @@
         dateElement.classList.add('date');
         var monthElement = document.createElement('span');
         monthElement.classList.add('month');
-        monthElement.textContent = data.date;
+        monthElement.textContent = data.time;
         var yearElement = document.createElement('span');
         yearElement.classList.add('year');
-        yearElement.textContent = data.time;
+        yearElement.textContent = data.date;
         dateElement.appendChild(monthElement);
         dateElement.appendChild(yearElement);
         var titleElement = document.createElement('h2');
@@ -395,10 +395,10 @@
         dateElement.classList.add('date');
         var monthElement = document.createElement('span');
         monthElement.classList.add('month');
-        monthElement.textContent = data.date;
+        monthElement.textContent = data.time;
         var yearElement = document.createElement('span');
         yearElement.classList.add('year');
-        yearElement.textContent = data.time;
+        yearElement.textContent = data.date;
         dateElement.appendChild(monthElement);
         dateElement.appendChild(yearElement);
         var titleElement = document.createElement('h2');
@@ -454,12 +454,12 @@
         dateElement.classList.add('date');
         var monthElement = document.createElement('span');
         monthElement.classList.add('month');
-        monthElement.textContent = data.date;
+        monthElement.textContent = data.time;
         var yearElement = document.createElement('span');
         yearElement.classList.add('year');
-        yearElement.textContent = data.time;
-        dateElement.appendChild(monthElement);
+        yearElement.textContent = data.date;
         dateElement.appendChild(yearElement);
+        dateElement.appendChild(monthElement);
         var titleElement = document.createElement('h2');
         titleElement.classList.add('title');
         titleElement.style.background = '#9f84c4';
@@ -520,6 +520,28 @@
 
     };
 </script>
+
+
+<script>
+    $(document).ready(function(){
+        $('.dropdown-item').click(function(e){
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log('Данные успешно отправлены на сервер');
+                },
+                error: function(error) {
+                    console.error('Ошибка отправки данных на сервер');
+                }
+            });
+        });
+    });
+    </script>
+
 
 
 <script src="{% static 'room/js/playerDataUpdate.js' %}"></script>
