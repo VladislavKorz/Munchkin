@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.views import View
 from loguru import logger
 from room.models import *
+from users.services import *
 
 from .forms import CustomUserCreationForm
 # from .forms import LoginForm, RegisterForm
@@ -52,6 +53,7 @@ def ProfileViews(request, email=None):
 
     context = {
         "title": f"Манчкин - {profile}",
+        "games_count": get_games_count(profile),
         "profile": profile,
         "type_room": Rooms.ROOM_TYPE_CHOICES
     }
