@@ -1,5 +1,6 @@
 import json
 
+import qrcode
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.conf import settings
@@ -89,3 +90,29 @@ def update_player_race(request, player_id, race_value, race_name):
 
     # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return JsonResponse({'message': 'Данные успешно обновлены'})
+
+
+def generate_qr_code(request, room_code):
+    # Создаем объект QR-кода
+    qr = qrcode.QRCode(
+        version=1,  # Размер QR-кода
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Уровень коррекции ошибок
+        box_size=5,  # Размер каждого "блока" QR-кода
+        border=4,    # Количество блоков вокруг QR-кода
+    )
+
+    # Генерируем URL для QR-кода
+    room_url = reverse('room', args=[room_code])
+    url = request.build_absolute_uri(room_url)
+
+    # Добавляем данные в QR-код
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    # Создаем изображение QR-кода
+    img = qr.make_image(fill_color="blue", back_color="white")
+
+    # Сохраняем изображение или отдаем как HttpResponse
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response

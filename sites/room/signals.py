@@ -14,11 +14,15 @@ from .models import PlayerLeavel, PlayerPower, RoomPlayer
 def create_player_level(sender, instance, created, **kwargs):
     created_at = instance.create
     if created:
+        try:
+            power = instance.player.get_power()
+        except:
+            power = 0
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             settings.LEVEL_GROUP_NAME, {
                 "type": 'new_level',
-                "content": json.dumps({'level': instance.leavel, 'playerId': instance.player.id, 'power': instance.player.get_power(), 'username': instance.player.player.username, 'date': created_at.strftime("%d.%m"), 'time': created_at.strftime("%H:%M")}),
+                "content": json.dumps({'level': instance.leavel, 'playerId': instance.player.id, 'power': power, 'username': instance.player.player.username, 'date': created_at.strftime("%d.%m"), 'time': created_at.strftime("%H:%M")}),
             })
 
 
