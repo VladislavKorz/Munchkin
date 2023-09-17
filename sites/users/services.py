@@ -1,3 +1,6 @@
+# user - это экземпляр модели CustomUser
+
+
 # сколько игр у пользователя
 def get_games_count(user):
 	return user.roomPlayer.all().count()
@@ -11,3 +14,10 @@ def last_game_date(user):
 # суммарный уровень по всем играм
 def level_sum(user):
 	return sum([ i.get_leavel() for i in user.roomPlayer.all()])
+
+
+# скольк всего побед (10 уровней) у игрока
+def get_victories(user):
+	wins = sum([i.leavel.filter(leavel=10).count() for i in user.roomPlayer.all()])
+	games = user.roomPlayer.all().count()
+	return (wins/games)*100

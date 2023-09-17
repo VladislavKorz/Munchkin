@@ -54,6 +54,7 @@ def ProfileViews(request, email=None):
     context = {
         "title": f"Манчкин - {profile}",
         "games_count": get_games_count(profile),
+        "games_won": get_victories(profile),
         "profile": profile,
         "type_room": Rooms.ROOM_TYPE_CHOICES
     }
