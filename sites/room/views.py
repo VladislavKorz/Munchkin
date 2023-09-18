@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from loguru import logger
+import random
 
 from .models import *
 from .models import PlayerClass
@@ -60,10 +61,14 @@ def RoomViews(request, room_code=None):
         room = get_object_or_404(Rooms, code=room_code)
     else:
         room = ''
+    players = room.player.all()
+    colors = [ "#{:02x}{:02x}{:02x}".format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in players]
     context = {
         "title": f"Комната",
         'room': room,
+        'players': players,
         'classes': PlayerClass.CLASS_CHOICES,
+        'colors':colors,
         'races': PlayerRace.CLASS_CHOICES,
     }
     return render(request, 'room/room.html', context)
@@ -116,3 +121,9 @@ def generate_qr_code(request, room_code):
     response = HttpResponse(content_type="image/png")
     img.save(response, "PNG")
     return response
+
+
+
+
+def simple_chart_view(request):
+    return render(request, 'room/test.html')

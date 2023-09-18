@@ -20,4 +20,7 @@ def level_sum(user):
 def get_victories(user):
 	wins = sum([i.leavel.filter(leavel=10).count() for i in user.roomPlayer.all()])
 	games = user.roomPlayer.all().count()
-	return (wins/games)*100
+	try:
+		return (wins/games)*100
+	except ZeroDivisionError:
+		return 0
