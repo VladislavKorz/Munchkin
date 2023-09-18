@@ -8,32 +8,38 @@
 
 <script>
   const ctx = document.getElementById('myChart');
+  const now = new Date();
+  const labels = Array.from({ length: 10 }, (_, i) => {
+  const timestamp = now.getTime() + i * 3600 * 1000; // Add 1 hour intervals
+  const date = new Date(timestamp);
+  return `${date.getHours()}:${date.getMinutes()}`;
+});
 
 	new Chart(document.getElementById("line-chart"), {
 	  type: 'line',
 	  data: {
-	    labels: [1,2,3,4,5,6,7,8,9, 10],
-	    datasets: [{ 
+	    labels: labels,
+	    datasets: [{
 	        data: [1, 2, 3, 2, 4, 6, 4],
 	        label: "CrazyPlayer",
 	        borderColor: "#3e95cd",
 	        fill: false
-	      }, { 
+	      }, {
 	        data: [1, 3, 4, 3, 5, 6, 7],
 	        label: "Gamer1703",
 	        borderColor: "#8e5ea2",
 	        fill: false
-	      }, { 
+	      }, {
 	        data: [1, 2, 1, 3, 4, 5, 3],
 	        label: "Destroyer",
 	        borderColor: "#3cba9f",
 	        fill: false
-	      }, { 
+	      }, {
 	        data: [1, 3, 5, 7, 9, 8, 6],
 	        label: "Spooky800",
 	        borderColor: "#e8c3b9",
 	        fill: false
-	      }, { 
+	      }, {
 	        data: [1, 2, 5, 7, 5, 3, 1],
 	        label: "Anonymus1",
 	        borderColor: "#c45850",
@@ -52,4 +58,3 @@
 	});
 
 </script>
-

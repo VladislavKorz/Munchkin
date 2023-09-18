@@ -8,19 +8,33 @@
 
 {% block body %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const now = new Date();
+    const labels = Array.from({ length: 10 }, (_, i) => {
+    const timestamp = now.getTime() + i * 3600 * 1000; // Add 1 hour intervals
+    const date = new Date(timestamp);
+    return `${date.getHours()}:${date.getMinutes()}`;
+  });
+</script>
+
 <div style="height: 400px; width: 600px;">
   <canvas id="line-chart"></canvas>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div style="height: 400px; width: 600px;">
+  <canvas id="line-chart2"></canvas>
+</div>
+
+
 
 <!-- кигроки комнаты, их уровни и мощь -->
 
 <script>
-  const ctx = document.getElementById('myChart');
 
     // Создаем массив данных для графика
-  const datasets = [
+  const datasets1 = [
     {% for player in players %}
     {
       data: [
@@ -35,11 +49,12 @@
     {% endfor %}
   ];
 
+
     new Chart(document.getElementById("line-chart"), {
       type: 'line',
       data: {
-        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        datasets: datasets
+        labels: labels,
+        datasets: datasets1
       },
       options: {
         title: {
@@ -54,6 +69,42 @@
 </script>
 
 
+
+<script>
+
+    // Создаем массив данных для графика
+  const datasets2 = [
+    {% for player in players %}
+    {
+      data: [
+        {% for power in player.power.all.reverse %}
+        "{{ power.power }}",
+        {% endfor %}
+      ],
+      label: "{{ player.player.username }}",
+      borderColor: "{{ colors.forloop.counter }}",
+      fill: false
+    },
+    {% endfor %}
+  ];
+
+    new Chart(document.getElementById("line-chart2"), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: datasets2
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'World population per region'
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+</script>
 
 
 <div class="combat-room">
