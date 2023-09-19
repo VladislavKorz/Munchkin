@@ -1,4 +1,5 @@
 import json
+import random
 
 import qrcode
 from asgiref.sync import async_to_sync
@@ -10,7 +11,6 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from loguru import logger
-import random
 
 from .models import *
 from .models import PlayerClass
@@ -126,4 +126,6 @@ def generate_qr_code(request, room_code):
 
 
 def simple_chart_view(request):
-    return render(request, 'room/test.html')
+    room = Rooms.objects.first()
+    players = room.player.all()
+    return render(request, 'room/test.html', {"players":players})

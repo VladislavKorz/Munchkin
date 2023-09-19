@@ -3,58 +3,67 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
 <!-- кигроки комнаты, их уровни и мощь -->
 
 <script>
-  const ctx = document.getElementById('myChart');
-  const now = new Date();
-  const labels = Array.from({ length: 10 }, (_, i) => {
-  const timestamp = now.getTime() + i * 3600 * 1000; // Add 1 hour intervals
-  const date = new Date(timestamp);
-  return `${date.getHours()}:${date.getMinutes()}`;
+  Chart.register(ChartDataLabels);
+
+  const datasets1 = [
+    {% for player in players %}
+    {
+        leavelData: [
+            {% for level in player.leavel.all.reverse %}
+                "{{ level.leavel }}",
+            {% endfor %}
+        ],
+        createData: [
+            {% for level in player.leavel.all.reverse %}
+				"{{ level.create|time:'H:i' }}",
+            {% endfor %}
+        ],
+        label: "{{ player.player.username }}",
+        fill: false
+    },
+    {% endfor %}
+];
+
+new Chart(document.getElementById("line-chart"), {
+    type: 'line',
+    data: {
+        labels: [1,2,3,4,5,6,7,8,9,10],
+        datasets: datasets1.map(function(dataset) {
+            return {
+                data: dataset.leavelData,
+                label: dataset.label,
+                fill: false
+            };
+        }),
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'World population per region (in millions)'
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            datalabels: {
+                color: 'black',
+                formatter: function(value, context) {
+					if (context.dataIndex === 0) {
+						return value;
+					} else {
+						return value + ' (' + datasets1[context.datasetIndex].createData[context.dataIndex] + ')';
+					}
+				}
+
+            }
+        }
+    }
 });
 
-	new Chart(document.getElementById("line-chart"), {
-	  type: 'line',
-	  data: {
-	    labels: labels,
-	    datasets: [{
-	        data: [1, 2, 3, 2, 4, 6, 4],
-	        label: "CrazyPlayer",
-	        borderColor: "#3e95cd",
-	        fill: false
-	      }, {
-	        data: [1, 3, 4, 3, 5, 6, 7],
-	        label: "Gamer1703",
-	        borderColor: "#8e5ea2",
-	        fill: false
-	      }, {
-	        data: [1, 2, 1, 3, 4, 5, 3],
-	        label: "Destroyer",
-	        borderColor: "#3cba9f",
-	        fill: false
-	      }, {
-	        data: [1, 3, 5, 7, 9, 8, 6],
-	        label: "Spooky800",
-	        borderColor: "#e8c3b9",
-	        fill: false
-	      }, {
-	        data: [1, 2, 5, 7, 5, 3, 1],
-	        label: "Anonymus1",
-	        borderColor: "#c45850",
-	        fill: false
-	      }
-	    ]
-	  },
-	  options: {
-	    title: {
-	      display: true,
-	      text: 'World population per region (in millions)'
-	    },
-	    responsive: true,
-    	maintainAspectRatio: false
-	  }
-	});
+
 
 </script>
