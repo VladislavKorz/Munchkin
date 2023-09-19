@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block header %}
+<link rel="stylesheet" href="{% static 'room/css/room.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script>
+    const labels = [1,2,3,4,5,6,7,8,9,10]
+</script>
+
+<div style="height: 400px; width: 600px;">
+  <canvas id="line-chart"></canvas>
+</div>
+
+<div style="height: 400px; width: 600px;">
+  <canvas id="line-chart2"></canvas>
+</div>
+
+
+
+<!-- кигроки комнаты, их уровни и мощь -->
+
+<script>
+    Chart.register(ChartDataLabels);
+
+    const datasets1 = [
+      {% for player in players %}
+      {
+          leavelData: [
+              {% for level in player.leavel.all.reverse %}
+                  "{{ level.leavel }}",
+              {% endfor %}
+          ],
+          createData: [
+              {% for level in player.leavel.all.reverse %}
+                  "{{ level.create|time:'H:i' }}",
+              {% endfor %}
+          ],
+          label: "{{ player.player.username }}",
+          fill: false
+      },
+      {% endfor %}
+  ];
+
+  new Chart(document.getElementById("line-chart"), {
+      type: 'line',
+      data: {
+          labels: [1,2,3,4,5,6,7,8,9,10],
+          datasets: datasets1.map(function(dataset) {
+              return {
+                  data: dataset.leavelData,
+                  label: dataset.label,
+                  fill: false
+              };
+          }),
+      },
+      options: {
+          title: {
+              display: true,
+              text: 'World population per region (in millions)'
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+              datalabels: {
+                  color: 'black',
+                  formatter: function(value, context) {
+                      if (context.dataIndex === 0) {
+                          return value;
+                      } else {
+                          return value + ' (' + datasets1[context.datasetIndex].createData[context.dataIndex] + ')';
+                      }
+                  }
+
+              }
+          }
+      }
+  });
+
+
+
+  </script>
+
+
+  <script>
+    Chart.register(ChartDataLabels);
+
+    const datasets2 = [
+      {% for player in players %}
+      {
+          leavelData: [
+              {% for power in player.power.all.reverse %}
+                  "{{ power.power }}",
+              {% endfor %}
+          ],
+          createData: [
+              {% for power in player.power.all.reverse %}
+                  "{{ power.create|time:'H:i' }}",
+              {% endfor %}
+          ],
+          label: "{{ player.player.username }}",
+          fill: false
+      },
+      {% endfor %}
+  ];
+
+  new Chart(document.getElementById("line-chart2"), {
+      type: 'line',
+      data: {
+          labels: [1,2,3,4,5,6,7,8,9,10],
+          datasets: datasets2.map(function(dataset) {
+              return {
+                  data: dataset.leavelData,
+                  label: dataset.label,
+                  fill: false
+              };
+          }),
+      },
+      options: {
+          title: {
+              display: true,
+              text: 'World population per region (in millions)'
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+              datalabels: {
+                  color: 'black',
+                  formatter: function(value, context) {
+                      if (context.dataIndex === 0) {
+                          return value;
+                      } else {
+                          return value + ' (' + datasets2[context.datasetIndex].createData[context.dataIndex] + ')';
+                      }
+                  }
+
+              }
+          }
+      }
+  });
+
+
+
+  </script>
+
+{% endblock body %}

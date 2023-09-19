@@ -61,14 +61,11 @@ def RoomViews(request, room_code=None):
         room = get_object_or_404(Rooms, code=room_code)
     else:
         room = ''
-    players = room.player.all()
-    colors = [ "#{:02x}{:02x}{:02x}".format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for i in players]
+
     context = {
         "title": f"Комната",
         'room': room,
-        'players': players,
         'classes': PlayerClass.CLASS_CHOICES,
-        'colors':colors,
         'races': PlayerRace.CLASS_CHOICES,
     }
     return render(request, 'room/room.html', context)
@@ -129,3 +126,9 @@ def simple_chart_view(request):
     room = Rooms.objects.first()
     players = room.player.all()
     return render(request, 'room/test.html', {"players":players})
+
+
+def statistics_view(request, code):
+    room = get_object_or_404(Rooms, code=code)
+    players = room.player.all()
+    return render(request, 'room/statistics.html', {'players': players})
