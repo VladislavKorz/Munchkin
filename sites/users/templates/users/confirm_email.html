@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Confirmation</title>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>Подтверждение почты</h1>
+        <p>Спасибо за регистрацию. Теперь, чтобы иметь возможность создавать комнату, нужно подтвердить свою почту.</p>
+        <p>Если почта останется неподтверждённой, то вы сможете только присоединяться к существующим комнатам.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" style="padding: 10px 20px; background-color: #007BFF; color: #ffffff; text-decoration: none; border-radius: 5px;">Подтвердить</button>
+        </form>
+        <a href="{% url 'profile' %}" style="padding: 10px 20px; background-color: #007BFF; color: #ffffff; text-decoration: none; border-radius: 5px;">Пропустить</a>
+    </div>
+</body>
+</html>

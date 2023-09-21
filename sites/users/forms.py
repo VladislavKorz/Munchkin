@@ -10,3 +10,8 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ['email', 'username', 'password1', 'password2']
+
+
+
+class EmailConfirmationForm(forms.Form):
+    code = forms.CharField(max_length=6, label='Код подтверждения')

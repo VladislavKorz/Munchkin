@@ -41,9 +41,15 @@
           <ul class='list-unstyled d-inline-flex'>
 
             <li class='mx-3'>
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRoomModal">
-                Создать комнату
-              </button>
+              {% if profile.email_verify %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createRoomModal">
+                  Создать комнату
+                </button>
+              {% else %}
+                <button type="button" class="btn btn-secondary" disabled>
+                  Создать комнату
+                </button>
+              {% endif %}
             </li>
             <li class='mx-3'>
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#connectRoomModal">

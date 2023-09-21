@@ -1,19 +1,22 @@
+from random import randint
+
 import requests
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.http import (HttpResponse, HttpResponseNotFound,
                          HttpResponseRedirect)
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
 from loguru import logger
 from room.models import *
 from users.services import *
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, EmailConfirmationForm
 # from .forms import LoginForm, RegisterForm
 from .models import *
 
@@ -68,7 +71,50 @@ def register(request):
             user = form.save()
             # Логиним пользователя сразу после регистрации
             login(request, user)
-            return redirect('profile')  # Перенаправляем на страницу профиля
+            user.email_confirmation_code = str(randint(100000, 999999))
+            user.save()
+
+            subject = 'Код подтверждения'
+            url = reverse('confirm_email_link', args=[request.user.id, user.email_confirmation_code])
+            message = f'Ваш код подтверждения: {user.email_confirmation_code}\nСсылка для подтверждения: {request.scheme}://{request.get_host()}{url}'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [user.email]
+
+            send_mail(subject, message, from_email, recipient_list)
+
+            return redirect('confirm_email')  # Перенаправляем на страницу профиля
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
+
+
+
+@login_required
+def confirm_email(request):
+    if request.method == 'POST':
+        form = EmailConfirmationForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data['code']
+            # Реализуйте здесь вашу логику проверки кода и подтверждения почты
+            user = request.user
+            if user.email_confirmation_code == code:
+                user.email_verify = True
+                user.save()
+
+            return redirect('profile')  # Замените 'success_page' на вашу страницу успеха
+    else:
+        form = EmailConfirmationForm()
+
+    return render(request, 'users/confirm_email.html', {'form': form})
+
+
+
+def confirm_email_link(request, user_id, confirmation_code):
+    user = get_object_or_404(CustomUser, id=int(user_id))
+
+    if user.email_confirmation_code == confirmation_code:
+        user.email_verify = True
+        user.save()
+        # Опционально: добавьте здесь какую-то логику для случая успешного подтверждения
+
+        return redirect('profile')  # Замените 'success_page' на вашу страницу успеха
