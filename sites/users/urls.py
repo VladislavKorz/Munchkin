@@ -9,7 +9,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('register/', register, name='users_register'),
     path('confirm_email/', confirm_email, name='confirm_email'),
-    path('confirm_email_link/<str:user_id>/<str:confirmation_code>/', confirm_email_link, name='confirm_email_link'),
+    path('confirm_email_link/<str:user_id>/<str:confirmation_code>/',confirm_email_link, name='confirm_email_link'),
 
     path('logout/', LogoutView.as_view(), name='logout'),
     path('<str:email>/', ProfileViews, name='profile'),
