@@ -5,9 +5,11 @@ import qrcode
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import (HttpResponse, HttpResponseForbidden,
+                         HttpResponseRedirect, JsonResponse)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from loguru import logger
@@ -38,8 +40,9 @@ def CreateRoomViews(request):
     leavel_to_win = request.POST.get("leavel_to_win")
     rules_book = request.user.rulesBook.all().filter(
         pk=request.POST.get("rules_book")).first()
+    only_verified_users = request.POST.get("email_verified") == "on"
     room = Rooms.objects.create(room_type=type_room, leavel_to_win=leavel_to_win,
-                                rules_book=rules_book, admin=request.user, owner=request.user)
+                                rules_book=rules_book, admin=request.user, owner=request.user, only_verified_users=only_verified_users)
     RoomPlayer.objects.create(
         room=room, player=request.user, order=1, gender=request.user.gender)
     return HttpResponseRedirect(reverse('room', args=(room.code,)))
@@ -62,6 +65,12 @@ def RoomViews(request, room_code=None):
     else:
         room = ''
 
+    if room.only_verified_users and not request.user.email_verify:
+        return render(request, 'room/email_confirm.html')
+
+    if room.room_type == 'C' and room.owner!=request.user:
+        return render(request, 'room/solo_room_error.html')
+
     context = {
         "title": f"Комната",
         'room': room,
@@ -69,6 +78,7 @@ def RoomViews(request, room_code=None):
         'races': PlayerRace.CLASS_CHOICES,
     }
     return render(request, 'room/room.html', context)
+
 
 
 @login_required

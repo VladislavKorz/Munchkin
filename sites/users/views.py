@@ -2,6 +2,7 @@ from random import randint
 
 import requests
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import AuthenticationForm
@@ -101,7 +102,10 @@ def confirm_email(request):
                 user.email_verify = True
                 user.save()
 
-            return redirect('profile')  # Замените 'success_page' на вашу страницу успеха
+                return redirect('profile')  # Замените 'success_page' на вашу страницу успеха
+            else:
+                messages.error(request, 'Неправильный код подтверждения.')
+
     else:
         form = EmailConfirmationForm()
 

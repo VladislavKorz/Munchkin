@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from .models import PlayerLeavel, PlayerPower, RoomPlayer
+from .models import PlayerLeavel, PlayerPower, RoomPlayer, Rooms, get_code
 
 
 @receiver(post_save, sender=PlayerLeavel)
@@ -51,3 +51,11 @@ def room_player_gender_changed(sender, instance, **kwargs):
                     "type": 'new_gender',
                     "content": json.dumps({'gender': instance.gender, 'playerId': instance.id, 'username': instance.player.username, 'gender_display': instance.get_gender_display()}),
                 })
+
+
+@receiver(pre_save, sender=Rooms)
+def set_unique_code(sender, instance, **kwargs):
+    print('wut')
+    previous = Rooms.objects.get(id=instance.id)
+    if previous:
+        instance.code = previous.code

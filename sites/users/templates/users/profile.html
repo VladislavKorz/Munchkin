@@ -225,6 +225,14 @@
               </select>
             </div>
           </div>
+          <div class="row g-3 mt-1" id="emailVerifiedContainer">
+            <div class="col-auto d-flex align-items-center">
+                <input type="checkbox" id="inputEmailVerified" name="email_verified">
+                <label for="inputEmailVerified" class="col-form-label ps-2"> Только пользователи с подтверждённой почтой</label>
+            </div>
+        </div>
+
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -268,5 +276,29 @@
     });
   });
 </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var typeRoomSelect = document.querySelector('[name="type_room"]');
+      var emailVerifiedContainer = document.getElementById('emailVerifiedContainer');
+
+      typeRoomSelect.addEventListener('change', function() {
+          if (this.value === 'C') {
+              emailVerifiedContainer.style.display = 'none';
+          } else {
+              emailVerifiedContainer.style.display = 'block';
+          }
+      });
+
+      // Инициализация при загрузке страницы
+      if (typeRoomSelect.value === 'C') {
+          emailVerifiedContainer.style.display = 'none';
+      } else {
+          emailVerifiedContainer.style.display = 'block';
+      }
+  });
+  </script>
+
 
 {% endblock scripts %}

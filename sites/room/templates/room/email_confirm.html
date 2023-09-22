@@ -46,27 +46,12 @@
     </style>
 </head>
 <body>
-    <h1>Подтверждение почты</h1>
-    <p>Спасибо за регистрацию. Теперь, чтобы иметь возможность создавать комнату, нужно подтвердить свою почту.</p>
-    <p>Если почта останется неподтверждённой, то вы сможете только присоединяться к существующим комнатам.</p>
-
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div>
-            <button type="submit" class="btn">Подтвердить</button>
+    <div id="messages">
+        <div class="alert alert-danger text-center" role="alert">
+          <strong>Упс...</strong><br>
+          Вам нужно подтвердить свою почту для того, чтобы зайти в эту комнату <br/>
+          <a href="{% url 'profile' %}">Вернуться в профиль</a>
         </div>
-        <div>
-            <button type="button" class="btn" onclick="window.location.href='{% url 'profile' %}'">Пропустить</button>
-        </div>
-    </form>
+      </div>
 </body>
 </html>

@@ -9,13 +9,16 @@ from users.models import CustomUser
 
 ROOMS_CODE_LENGHT = 5
 
+def get_code():
+    return get_random_string(ROOMS_CODE_LENGHT)
+
 class Rooms(models.Model):
     ROOM_TYPE_CHOICES = (
         ('O', 'Открытая'),
         ('C', 'Одиночная'),
         ('S', 'Закрытая'),
     )
-    code = models.CharField("Номер комнаты", max_length=5, unique=True, default=get_random_string(ROOMS_CODE_LENGHT))
+    code = models.CharField("Номер комнаты", max_length=5, unique=True, default=get_code)
     duration = models.TimeField("Продолжительность игры", default=datetime.time(00, 00))
     room_type = models.CharField("Тип игры", max_length = 1, choices = ROOM_TYPE_CHOICES, default='O')
     leavel_to_win = models.IntegerField("Сколько нужно уровней для победы", default=10)
@@ -23,6 +26,7 @@ class Rooms(models.Model):
     admin = models.ForeignKey("users.CustomUser", verbose_name="Админ комнаты", on_delete=models.SET_NULL, null=True, related_name='roomAdmin')
     owner = models.ForeignKey("users.CustomUser", verbose_name="Владелец комнаты", on_delete=models.SET_NULL, null=True, related_name="roomOwner")
     end = models.BooleanField("Игра завершилась?", default=False)
+    only_verified_users = models.BooleanField("Только пользователи с подтверждённой почтой", default=False)
 
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
@@ -43,7 +47,7 @@ class RoomPlayer(models.Model):
     player = models.ForeignKey("users.CustomUser", verbose_name="Игрок", on_delete=models.SET_NULL, null=True, related_name='roomPlayer')
     order = models.IntegerField("Порядок игроков", default=1)
     gender = models.CharField("Пол", max_length = 1, choices = CustomUser.GENDER_CHOICES, default='O')
-    
+
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
 
@@ -52,13 +56,13 @@ class RoomPlayer(models.Model):
 
     def get_power(self):
         return self.power.all().order_by('-pk').first().power
-    
+
     def get_racer(self):
         if self.playerRace.all():
             return self.playerRace.all().order_by('-pk').first().get_value_display()
         else:
             return None
-    
+
     def get_class(self):
         if self.playerClass.all():
             return self.playerClass.all().order_by('-pk').first().get_value_display()
@@ -98,7 +102,7 @@ class PlayerClass(models.Model):
         ('T', 'Вор'),
         ('C', 'Клирик'),
     )
-    
+
     player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='playerClass')
     value = models.CharField("Класс", max_length = 1, choices = CLASS_CHOICES, default='N')
     create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
@@ -122,7 +126,7 @@ class PlayerRace(models.Model):
 class RoomBattle(models.Model):
     monster = models.IntegerField("Итоговая сила монстра", default=0)
     player = models.IntegerField("Итоговая сила игрока/команды", default=0)
-    
+
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
 
