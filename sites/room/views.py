@@ -13,6 +13,7 @@ from django.http import (HttpResponse, HttpResponseForbidden,
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from loguru import logger
+from meta.models import MetaTag
 
 from .models import *
 from .models import PlayerClass
@@ -72,7 +73,7 @@ def RoomViews(request, room_code=None):
         return render(request, 'room/solo_room_error.html')
 
     context = {
-        "title": f"Комната",
+        "title": f"Комната-{room.code}",
         'room': room,
         'classes': PlayerClass.CLASS_CHOICES,
         'races': PlayerRace.CLASS_CHOICES,
@@ -139,6 +140,8 @@ def simple_chart_view(request):
 
 
 def statistics_view(request, code):
+    template = 'room/statistics.html'
     room = get_object_or_404(Rooms, code=code)
     players = room.player.all()
-    return render(request, 'room/statistics.html', {'players': players})
+    metatag = MetaTag.objects.get(html_path=template)
+    return render(request, template, {'players': players, 'title': metatag.title, 'metatag': metatag})

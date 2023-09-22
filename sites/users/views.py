@@ -28,7 +28,7 @@ class LoginView(View):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'title': 'Манчкин-Вход'})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request, request.POST)
@@ -40,7 +40,7 @@ class LoginView(View):
                 if user.is_active:
                     login(request, user)
                     return redirect('profile')
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form, 'title': 'Манчкин-Вход'})
 
 
 @login_required
@@ -86,7 +86,7 @@ def register(request):
             return redirect('confirm_email')  # Перенаправляем на страницу профиля
     else:
         form = CustomUserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form, 'title': 'Манчкин-Регистрация'})
 
 
 

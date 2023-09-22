@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'channels',
     'users',
     'home',
+    'meta',
     'room.apps.RoomConfig',
 ]
 
