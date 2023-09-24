@@ -12,6 +12,7 @@ urlpatterns = [
     path('confirm_email_link/<str:user_id>/<str:confirmation_code>/',confirm_email_link, name='confirm_email_link'),
 
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('connect_room/', connect_room, name='connect_room'),
     path('<str:email>/', ProfileViews, name='profile'),
     path('', ProfileViews, name='profile'),
     # path('', LogoutViews, name='logout'),

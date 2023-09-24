@@ -6,3 +6,4 @@ class MetaTag(models.Model):
 	description = models.TextField()
 	keywords = models.TextField()
 	title = models.CharField(max_length=64)
+	image = models.ImageField(upload_to='metatags', blank=True, null=True)
