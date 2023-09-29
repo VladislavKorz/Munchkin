@@ -531,4 +531,42 @@ input:disabled {
     border-radius: 100px;
 }
 
+
+.connection-request {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.connection-request p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+.connection-request button {
+    margin: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.connection-request button.accept {
+    background-color: #4caf50;
+    /* Зеленый цвет */
+    color: #ffffff;
+    /* Белый цвет */
+    border: none;
+}
+
+.connection-request button.reject {
+    background-color: #f44336;
+    /* Красный цвет */
+    color: #ffffff;
+    /* Белый цвет */
+    border: none;
+}
+
 /* END TIMELINE */

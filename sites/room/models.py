@@ -42,6 +42,15 @@ class Rooms(models.Model):
         return reverse("room", kwargs={"room_code": self.code})
 
 
+class ConnectionRequest(models.Model):
+    room = models.ForeignKey("room.Rooms", verbose_name="Комната для подключения", on_delete=models.SET_NULL, null=True, related_name='connection')
+    player = models.ForeignKey("users.CustomUser", verbose_name="Подключающийся игрок", on_delete=models.SET_NULL, null=True, related_name='connectionPlayer')
+    approved = models.BooleanField(default=False)
+    create = models.DateTimeField(verbose_name='Дата создания заявки на подключение', auto_now_add=True)
+
+    def __str__(self):
+        return f"Пользователь {self.player.username} - комната {self.room.code}"
+
 class RoomPlayer(models.Model):
     room = models.ForeignKey("room.Rooms", verbose_name="Комната", on_delete=models.SET_NULL, null=True, related_name='player')
     player = models.ForeignKey("users.CustomUser", verbose_name="Игрок", on_delete=models.SET_NULL, null=True, related_name='roomPlayer')

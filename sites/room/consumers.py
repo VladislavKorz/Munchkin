@@ -137,3 +137,30 @@ class GenderSyncConsumer(SyncConsumer):
             'type': 'websocket.send',
             'text': event['content'],
         })
+
+
+class ConnectionRequestSyncConsumer(SyncConsumer):
+
+    def websocket_connect(self, event):
+        self.send({
+            'type': 'websocket.accept'
+        })
+
+        # Join class group
+        async_to_sync(self.channel_layer.group_add)(
+            settings.CONNECTION_REQUEST_GROUP_NAME,  # Замените на имя вашей группы для классов
+            self.channel_name
+        )
+
+    def websocket_disconnect(self, event):
+        # Leave class group
+        async_to_sync(self.channel_layer.group_discard)(
+            settings.CONNECTION_REQUEST_GROUP_NAME,  # Замените на имя вашей группы для классов
+            self.channel_name
+        )
+
+    def new_connection_request(self, event):
+        self.send({
+            'type': 'websocket.send',
+            'text': event['content'],
+        })

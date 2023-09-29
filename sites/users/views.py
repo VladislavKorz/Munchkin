@@ -127,7 +127,7 @@ def confirm_email_link(request, user_id, confirmation_code):
 def connect_room(request):
     if request.method == 'POST':
         room_code = request.POST.get('room')
-        
+
         # Получите текущего пользователя (CustomUser)
         user = request.user
 
@@ -141,3 +141,41 @@ def connect_room(request):
         # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
         return HttpResponseRedirect(reverse('room', args=(room_code,)))
+
+
+
+def make_connection_request(request):
+    if request.method == 'POST':
+        room_code = request.POST.get('room')
+
+        # Получите текущего пользователя (CustomUser)
+        user = request.user
+
+        # Найдите комнату по её коду
+        room = Rooms.objects.get(code=room_code)
+
+        # Создайте запись в RoomPlayer, связав пользователя с комнатой
+        room_player = ConnectionRequest(room=room, player=user)
+        room_player.save()
+
+        # Верните что-то, что должно отобразиться после успешного подключения к комнате
+
+        return redirect('profile')
+
+
+def make_qr_connection_request(request, code):
+    if request.method == 'GET':
+
+        # Получите текущего пользователя (CustomUser)
+        user = request.user
+
+        # Найдите комнату по её коду
+        room = Rooms.objects.get(code=code)
+
+        # Создайте запись в RoomPlayer, связав пользователя с комнатой
+        room_player = ConnectionRequest(room=room, player=user)
+        room_player.save()
+
+        # Верните что-то, что должно отобразиться после успешного подключения к комнате
+
+        return redirect('profile')

@@ -14,4 +14,6 @@ urlpatterns = [
     path('update_player_race/<int:player_id>/<str:race_value>/<str:race_name>/', update_player_race, name='update_player_race'),
     path('generate_qr_code/<str:room_code>/', generate_qr_code, name='generate_qr_code'),
     path('statistics/<str:code>/', statistics_view, name='statistics'),
+    path('accept_connection/<int:connection_id>/', accept_connection, name='accept_connection'),
+    path('reject_connection/<int:connection_id>/', reject_connection, name='reject_connection'),
 ]

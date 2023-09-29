@@ -251,7 +251,7 @@
         <h5 class="modal-title">Подключиться к комнате</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-        <form method="post" id="connectRoomForm" action="{% url 'connect_room' %}" >
+        <form method="post" id="connectRoomForm" action="{% url 'make_connection_request' %}" >
           <div class="modal-body">
           <div class="mb-3">
             {% csrf_token %}

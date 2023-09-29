@@ -7,7 +7,8 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from .models import PlayerLeavel, PlayerPower, RoomPlayer, Rooms, get_code
+from .models import (ConnectionRequest, PlayerLeavel, PlayerPower, RoomPlayer,
+                     Rooms, get_code)
 
 
 @receiver(post_save, sender=PlayerLeavel)
@@ -40,7 +41,6 @@ def create_player_power(sender, instance, created, **kwargs):
 
 @receiver(pre_save, sender=RoomPlayer)
 def room_player_gender_changed(sender, instance, **kwargs):
-    print('test1')
     if instance.id:
         previous = RoomPlayer.objects.get(id=instance.id)
         if previous.gender != instance.gender:
@@ -55,7 +55,18 @@ def room_player_gender_changed(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Rooms)
 def set_unique_code(sender, instance, **kwargs):
-    print('wut')
     previous = Rooms.objects.get(id=instance.id)
     if previous:
         instance.code = previous.code
+
+
+@receiver(post_save, sender=ConnectionRequest)
+def create_player_connection(sender, instance, created, **kwargs):
+    created_at = instance.create
+    if created:
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            settings.CONNECTION_REQUEST_GROUP_NAME, {
+                "type": 'new_connection_request',
+                "content": json.dumps({'connectionID': instance.id, 'code': instance.room.code, 'playerId': instance.player.id, 'username': instance.player.username, 'created_at': created_at.strftime("%H:%M %d.%m")}),
+            })

@@ -10,6 +10,7 @@ from room.views import simple_chart_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('room/', include('room.urls')),
+    path('api/', include('tariff.urls')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('test/', simple_chart_view),
     path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico')),

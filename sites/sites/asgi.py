@@ -16,5 +16,6 @@ application = ProtocolTypeRouter({
         path("ws/level/", consumers.LevelSyncConsumer.as_asgi()),
         path("ws/power/", consumers.PowerSyncConsumer.as_asgi()),
         path("ws/gender/", consumers.GenderSyncConsumer.as_asgi()),
+        path("ws/request_connection/", consumers.ConnectionRequestSyncConsumer.as_asgi()),
     ]),
 })

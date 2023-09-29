@@ -12,7 +12,9 @@ urlpatterns = [
     path('confirm_email_link/<str:user_id>/<str:confirmation_code>/',confirm_email_link, name='confirm_email_link'),
 
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('connect_room/', connect_room, name='connect_room'),
+    #path('connect_room/', connect_room, name='connect_room'),
+    path('make_connection_request', make_connection_request, name='make_connection_request'),
+    path('make_qr_connection_request/<str:code>', make_qr_connection_request, name='make_qr_connection_request'),
     path('<str:email>/', ProfileViews, name='profile'),
     path('', ProfileViews, name='profile'),
     # path('', LogoutViews, name='logout'),

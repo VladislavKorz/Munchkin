@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_ckeditor_5',
+    'rest_framework',
+    'tariff',
     'channels',
     'users',
     'home',
@@ -265,6 +267,7 @@ CLASS_GROUP_NAME = 'new_class'
 LEVEL_GROUP_NAME = 'new_level'
 POWER_GROUP_NAME= 'new_power'
 GENDER_GROUP_NAME = 'new_gender'
+CONNECTION_REQUEST_GROUP_NAME = 'new_connection_request'
 
 
 LOGOUT_REDIRECT_URL = '/login/'  # Указываем путь к вашей собственной странице входа

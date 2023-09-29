@@ -75,6 +75,7 @@ def RoomViews(request, room_code=None):
     context = {
         "title": f"Комната-{room.code}",
         'room': room,
+        'connection_requests': ConnectionRequest.objects.filter(room__code=room_code),
         'classes': PlayerClass.CLASS_CHOICES,
         'races': PlayerRace.CLASS_CHOICES,
     }
@@ -115,7 +116,7 @@ def generate_qr_code(request, room_code):
     )
 
     # Генерируем URL для QR-кода
-    room_url = reverse('room', args=[room_code])
+    room_url = reverse('make_qr_connection_request', args=[room_code])
     url = request.build_absolute_uri(room_url)
 
     # Добавляем данные в QR-код
@@ -145,3 +146,18 @@ def statistics_view(request, code):
     players = room.player.all()
     metatag = MetaTag.objects.get(html_path=template)
     return render(request, template, {'players': players, 'title': metatag.title, 'metatag': metatag})
+
+
+def accept_connection(request, connection_id):
+    connection = ConnectionRequest.objects.get(pk=connection_id)
+    connection.approved = True
+    connection.save()
+    # Здесь можно добавить код для отправки сообщения о принятии запроса через WebSocket
+    return HttpResponse("Запрос принят")
+
+def reject_connection(request, connection_id):
+    connection = ConnectionRequest.objects.get(pk=connection_id)
+    connection.approved = False
+    connection.save()
+    # Здесь можно добавить код для отправки сообщения об отклонении запроса через WebSocket
+    return HttpResponse("Запрос отклонен")

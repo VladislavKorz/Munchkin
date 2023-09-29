@@ -11,7 +11,6 @@
 {% block body %}
 
 
-
 <div class="combat-room">
     <div class="container">
         <div class="row">
@@ -30,6 +29,11 @@
                 </div>
             </div>
         </div>
+
+        <div id="connection-requests-container">
+            <!-- Здесь будут отображаться запросы на подключение -->
+        </div>
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="tab-content" id="myTabContent">
@@ -549,6 +553,88 @@
         });
     });
     </script>
+
+
+
+
+<script language="javascript">
+    var ws_url = 'ws://' + window.location.host + '/ws/request_connection/';
+    var connectionSocket = new WebSocket(ws_url);
+
+    connectionSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+
+        var code = "{{ room.code }}"
+        var admin = "{{ room.admin }}"
+        var request_user = "{{ request.user.email }}"
+
+        if (code === data.code && admin === request_user) {
+            // Создаем элемент блока с информацией о запросе на подключение
+            var requestBlock = document.createElement('div');
+            requestBlock.classList.add('connection-request');
+            requestBlock.classList.add(`connectionID-${data.connectionID}`);
+            requestBlock.innerHTML = `
+                <p>Запрос на подключение ${data.connectionID}</p>
+                <p>Игрок ID: ${data.playerId}</p>
+                <p>Имя пользователя: ${data.username}</p>
+                <p>Дата запроса на подключение: ${data.created_at}</p>
+                <button onclick="acceptConnection(${data.connectionID})">Принять</button>
+                <button onclick="rejectConnection(${data.connectionID})">Отклонить</button>
+            `;
+
+            // Добавляем блок к какому-то контейнеру на вашей странице
+            var container = document.getElementById('connection-requests-container');
+            container.appendChild(requestBlock);
+
+
+        }
+
+    };
+
+function acceptConnection(connectionID) {
+    // Отправляем запрос на принятие запроса с playerId
+    fetch(`/room/accept_connection/${connectionID}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Произошла ошибка');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data); // Если запрос успешно обработан
+            
+            // Находим элемент блока и скрываем его
+            var requestBlock = document.querySelector(`.connection-request.connectionID-${connectionID}`);
+            if (requestBlock) {
+                requestBlock.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+}
+
+function rejectConnection(connectionID) {
+    // Отправляем запрос на отклонение запроса с playerId
+    fetch(`/room/reject_connection/${connectionID}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Произошла ошибка');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data); // Если запрос успешно обработан
+            
+            // Находим элемент блока и скрываем его
+            var requestBlock = document.querySelector(`.connection-request.connectionID-${connectionID}`);
+            if (requestBlock) {
+                requestBlock.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+}
+
+</script>
+
 
 
 
