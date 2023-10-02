@@ -124,15 +124,16 @@ def confirm_email_link(request, user_id, confirmation_code):
         return redirect('profile')  # Замените 'success_page' на вашу страницу успеха
 
 
-def connect_room(request):
-    if request.method == 'POST':
-        room_code = request.POST.get('room')
+def connect_room(request, room):
+    if request.method == 'GET':
+    # if request.method == 'POST':
+        # room_code = request.POST.get('room')
 
         # Получите текущего пользователя (CustomUser)
         user = request.user
 
         # Найдите комнату по её коду
-        room = Rooms.objects.get(code=room_code)
+        room = Rooms.objects.get(code=room)
 
         # Создайте запись в RoomPlayer, связав пользователя с комнатой
         room_player = RoomPlayer(room=room, player=user)
@@ -140,7 +141,7 @@ def connect_room(request):
 
         # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
-        return HttpResponseRedirect(reverse('room', args=(room_code,)))
+        return HttpResponseRedirect(reverse('room', args=(room,)))
 
 
 
@@ -160,7 +161,25 @@ def make_connection_request(request):
 
         # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
-        return redirect('profile')
+        # context = {'room_code': room_code, 'user': user, 'connection': room_player}
+        # return render(request, 'users/wait_to_connect.html', context)
+
+        url = reverse('wait_to_connect', args=(room_player.id,))
+        
+        # Перенаправьте пользователя на новую страницу
+        return HttpResponseRedirect(url)
+
+
+def wait_to_connect(request, connection_id):
+
+    # Найдите связанную запись ConnectionRequest
+    connection = ConnectionRequest.objects.get(pk=connection_id)
+    room = Rooms.objects.get(code=connection.room.code)
+
+    # Верните что-то, что должно отобразиться на странице ожидания подключения
+    context = {'room': room, 'user': connection.player, 'connection': connection}
+    return render(request, 'users/wait_to_connect.html', context)
+
 
 
 def make_qr_connection_request(request, code):
@@ -178,4 +197,5 @@ def make_qr_connection_request(request, code):
 
         # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
-        return redirect('profile')
+        context = {'room_code': code, 'user': user}
+        return render(request, 'users/wait_to_connect.html', context)

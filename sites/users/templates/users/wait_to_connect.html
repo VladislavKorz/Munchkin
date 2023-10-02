@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ожидание подтверждения подключения</title>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1, p, form {
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px; /* Добавлено расстояние между кнопками */
+            width: 200px; /* Задаем фиксированную ширину кнопки */
+        }
+
+        .btn[disabled] {
+            width: 200px;
+            opacity: 0.5; /* Устанавливаем непрозрачность для отключенной кнопки */
+            cursor: not-allowed; /* Запрещаем курсору при наведении менять вид для отключенной кнопки */
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .messages {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .error {
+            background-color: #FFD2D2;
+            border: 1px solid #FF5151;
+            color: #FF5151;
+            padding: 5px;
+            list-style: none; /* Удаление маркера */
+            max-width: 300px; /* Устанавливаем максимальную ширину */
+            margin: 0 auto; /* Центрируем блок */
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <h1>Ожидание подтверждения подключения</h1>
+    <div class="btn-container">
+        <a href="{% url 'profile' %}" class="btn">Перейти на страницу профиля</a> 
+        {% if connection.approved %}
+            <a href="{% url 'connect_room' room.code %}" class="btn">Подключиться к комнате</a>
+        {% else %}
+            <button class="btn" disabled>Подключиться к комнате</button>
+        {% endif %}
+    </div>
+    <p>Код комнаты: {{ room.code }}</p>
+    <p>Пользователь: {{ user.username }}</p>
+
+    <p>Ваш запрос на подключение к комнате ожидает подтверждения администратора.</p>
+    <p>Пожалуйста, ожидайте. Мы уведомим вас, как только ваш запрос будет рассмотрен.</p>
+</body>
+</html>
