@@ -31,7 +31,18 @@
         </div>
 
         <div id="connection-requests-container">
-            <!-- Здесь будут отображаться запросы на подключение -->
+            {% if request.user.email == room.admin.email %}
+                {% for connection in connections %}
+                <div class="connection-request connectionID-{{ connection.id }}" >
+                    <p>Запрос на подключение {{ connection.id }}</p>
+                    <p>Игрок ID: {{ connection.player.id }}</p>
+                    <p>Имя пользователя: {{ connection.player.username }}</p>
+                    <p>Дата запроса на подключение: {{ connection.create|date:"H:i d.m" }}</p>
+                    <button onclick="acceptConnectionhtml({{ connection.id }})">Принять</button>
+                    <button onclick="rejectConnectionhtml({{ connection.id }})">Отклонить</button>
+                </div>
+                {% endfor %}
+            {% endif %}
         </div>
 
         <div class="row">
@@ -584,7 +595,7 @@
 
             // Добавляем блок к какому-то контейнеру на вашей странице
             var container = document.getElementById('connection-requests-container');
-            container.appendChild(requestBlock);
+            container.prepend(requestBlock);
 
 
         }
@@ -636,7 +647,50 @@ function rejectConnection(connectionID) {
 </script>
 
 
+<script>
+    function acceptConnectionhtml(connection_id) {
+    // Отправляем запрос на принятие запроса с connection_id
+    fetch(`/room/accept_connection/${connection_id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Произошла ошибка');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data); // Если запрос успешно обработан
+            
+            // Находим элемент блока и скрываем его
+            var requestBlock = document.querySelector(`.connection-request.connectionID-${connection_id}`);
+            if (requestBlock) {
+                requestBlock.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+}
 
+function rejectConnectionhtml(connection_id) {
+    // Отправляем запрос на отклонение запроса с connection_id
+    fetch(`/room/reject_connection/${connection_id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Произошла ошибка');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data); // Если запрос успешно обработан
+            
+            // Находим элемент блока и скрываем его
+            var requestBlock = document.querySelector(`.connection-request.connectionID-${connection_id}`);
+            if (requestBlock) {
+                requestBlock.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+}
+
+</script>
 
 <script src="{% static 'room/js/playerDataUpdate.js' %}"></script>
 <script src="{% static 'room/js/playerGenderChangingAjax.js' %}"></script>

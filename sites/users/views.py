@@ -131,18 +131,25 @@ def connect_room(request, room):
 
         # Получите текущего пользователя (CustomUser)
         user = request.user
-
-        # Найдите комнату по её коду
         room = Rooms.objects.get(code=room)
 
-        # Создайте запись в RoomPlayer, связав пользователя с комнатой
-        room_player = RoomPlayer(room=room, player=user)
-        room_player.save()
+        if not user.is_authenticated:
+            return redirect('login')
 
-        # Верните что-то, что должно отобразиться после успешного подключения к комнате
+        if connection:=ConnectionRequest.objects.filter(player=user, room=room).last():
+            if connection.approved !=True:
+                return redirect('profile')
 
-        return HttpResponseRedirect(reverse('room', args=(room,)))
+            else:
+                # Создайте запись в RoomPlayer, связав пользователя с комнатой
+                room_player = RoomPlayer(room=room, player=user)
+                room_player.save()
 
+                # Верните что-то, что должно отобразиться после успешного подключения к комнате
+
+                return HttpResponseRedirect(reverse('room', args=(room,)))
+
+        return redirect('profile')
 
 
 def make_connection_request(request):
@@ -195,7 +202,8 @@ def make_qr_connection_request(request, code):
         room_player = ConnectionRequest(room=room, player=user)
         room_player.save()
 
-        # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
-        context = {'room_code': code, 'user': user}
-        return render(request, 'users/wait_to_connect.html', context)
+        url = reverse('wait_to_connect', args=(room_player.id,))
+        
+        # Перенаправьте пользователя на новую страницу
+        return HttpResponseRedirect(url)

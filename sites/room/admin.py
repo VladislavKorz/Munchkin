@@ -4,7 +4,11 @@ from .models import *
 
 admin.site.register(Rooms)
 admin.site.register(RoomPlayer)
-admin.site.register(ConnectionRequest)
+
+
+@admin.register(ConnectionRequest)
+class ConnectionRequestAdmin(admin.ModelAdmin):
+    list_display = ('id', 'player', 'room', 'approved')
 
 @admin.register(PlayerLeavel)
 class PlayerLevelAdmin(admin.ModelAdmin):

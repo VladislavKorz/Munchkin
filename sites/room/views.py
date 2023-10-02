@@ -17,6 +17,7 @@ from meta.models import MetaTag
 
 from .models import *
 from .models import PlayerClass
+from django.db.models import F
 
 
 def broadcast_race(race, player_id, username, date, time):
@@ -74,6 +75,7 @@ def RoomViews(request, room_code=None):
 
     context = {
         "title": f"Комната-{room.code}",
+        'connections': room.connection.filter(approved=False, create=F('update')).order_by('-create'),
         'room': room,
         'connection_requests': ConnectionRequest.objects.filter(room__code=room_code),
         'classes': PlayerClass.CLASS_CHOICES,
