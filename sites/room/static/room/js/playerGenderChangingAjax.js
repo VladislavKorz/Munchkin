@@ -1,5 +1,5 @@
 // Смена пола
-$('.player-gender').on('click', function () {
+$(document).on('click', '.player-gender', function () {
     let $player = $(this).closest('.player');
     let gender = $(this).find('.fa');
     let gender_val = 'O';

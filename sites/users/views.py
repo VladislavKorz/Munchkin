@@ -162,19 +162,29 @@ def make_connection_request(request):
         # Найдите комнату по её коду
         room = Rooms.objects.get(code=room_code)
 
-        # Создайте запись в RoomPlayer, связав пользователя с комнатой
-        room_player = ConnectionRequest(room=room, player=user)
-        room_player.save()
+        if room.owner==request.user or room.admin==request.user:
+            return HttpResponseRedirect(reverse('room', args=(room,)))
 
-        # Верните что-то, что должно отобразиться после успешного подключения к комнате
+        elif room.room_type == 'C':
+            return render(request, 'room/solo_room_error.html')
 
-        # context = {'room_code': room_code, 'user': user, 'connection': room_player}
-        # return render(request, 'users/wait_to_connect.html', context)
+        elif any([i.approved==True for i in request.user.connectionPlayer.all()]):
+            return HttpResponseRedirect(reverse('room', args=(room,)))
+            
+        else:
+            # Создайте запись в RoomPlayer, связав пользователя с комнатой
+            room_player = ConnectionRequest(room=room, player=user)
+            room_player.save()
 
-        url = reverse('wait_to_connect', args=(room_player.id,))
-        
-        # Перенаправьте пользователя на новую страницу
-        return HttpResponseRedirect(url)
+            # Верните что-то, что должно отобразиться после успешного подключения к комнате
+
+            # context = {'room_code': room_code, 'user': user, 'connection': room_player}
+            # return render(request, 'users/wait_to_connect.html', context)
+
+            url = reverse('wait_to_connect', args=(room_player.id,))
+
+            # Перенаправьте пользователя на новую страницу
+            return HttpResponseRedirect(url)
 
 
 def wait_to_connect(request, connection_id):
@@ -204,6 +214,6 @@ def make_qr_connection_request(request, code):
 
 
         url = reverse('wait_to_connect', args=(room_player.id,))
-        
+
         # Перенаправьте пользователя на новую страницу
         return HttpResponseRedirect(url)

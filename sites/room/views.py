@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import F
 from django.http import (HttpResponse, HttpResponseForbidden,
                          HttpResponseRedirect, JsonResponse)
 from django.shortcuts import get_object_or_404, redirect, render
@@ -17,23 +18,22 @@ from meta.models import MetaTag
 
 from .models import *
 from .models import PlayerClass
-from django.db.models import F
 
 
-def broadcast_race(race, player_id, username, date, time):
+def broadcast_race(race, player_id, username, date, time, room):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         settings.RACE_GROUP_NAME, {
             "type": 'new_race',
-            "content": json.dumps({'race': race, 'playerId': player_id, 'username': username, 'date': date, 'time': time}),
+            "content": json.dumps({'race': race, 'playerId': player_id, 'username': username, 'date': date, 'time': time, 'room': room}),
         })
 
-def broadcast_class(player_class, player_id, username, date, time):
+def broadcast_class(player_class, player_id, username, date, time, room):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         settings.CLASS_GROUP_NAME, {
             "type": 'new_class',
-            "content": json.dumps({'class': player_class, 'playerId': player_id, 'username': username, 'date': date, 'time': time}),
+            "content": json.dumps({'class': player_class, 'playerId': player_id, 'username': username, 'date': date, 'time': time, 'room': room}),
         })
 
 @login_required
@@ -91,7 +91,7 @@ def update_player_class(request, player_id, class_value, class_name):
 
     player_class = PlayerClass.objects.create(player=player, value=class_value)
     created_at = player_class.create
-    broadcast_class(class_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"))
+    broadcast_class(class_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"), player.room.code)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -102,7 +102,7 @@ def update_player_race(request, player_id, race_value, race_name):
 
     race = PlayerRace.objects.create(player=player, value=race_value)
     created_at = race.create
-    broadcast_race(race_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"))
+    broadcast_race(race_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"), player.room.code)
 
     # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return JsonResponse({'message': 'Данные успешно обновлены'})

@@ -164,3 +164,58 @@ class ConnectionRequestSyncConsumer(SyncConsumer):
             'type': 'websocket.send',
             'text': event['content'],
         })
+
+
+class ApproveConnectionRequestSyncConsumer(SyncConsumer):
+
+    def websocket_connect(self, event):
+        self.send({
+            'type': 'websocket.accept'
+        })
+
+        # Join class group
+        async_to_sync(self.channel_layer.group_add)(
+            settings.APPROVE_CONNECTION_GROUP_NAME,  # Замените на имя вашей группы для классов
+            self.channel_name
+        )
+
+    def websocket_disconnect(self, event):
+        # Leave class group
+        async_to_sync(self.channel_layer.group_discard)(
+            settings.CONNECTION_REQUEST_GROUP_NAME,  # Замените на имя вашей группы для классов
+            self.channel_name
+        )
+
+    def approve_connection_request(self, event):
+        self.send({
+            'type': 'websocket.send',
+            'text': event['content'],
+        })
+
+
+
+class RoomPlayerSyncConsumer(SyncConsumer):
+
+    def websocket_connect(self, event):
+        self.send({
+            'type': 'websocket.accept'
+        })
+
+        # Join ticks group
+        async_to_sync(self.channel_layer.group_add)(
+            settings.ROOM_PLAYER_GROUP_NAME,
+            self.channel_name
+        )
+
+    def websocket_disconnect(self, event):
+        # Leave ticks group
+        async_to_sync(self.channel_layer.group_discard)(
+            settings.ROOM_PLAYER_GROUP_NAME,
+            self.channel_name
+        )
+
+    def new_room_player(self, event):
+        self.send({
+            'type': 'websocket.send',
+            'text': event['content'],
+        })

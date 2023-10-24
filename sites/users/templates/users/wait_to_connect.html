@@ -65,7 +65,7 @@
 
     <h1>Ожидание подтверждения подключения</h1>
     <div class="btn-container">
-        <a href="{% url 'profile' %}" class="btn">Перейти на страницу профиля</a> 
+        <a href="{% url 'profile' %}" class="btn">Перейти на страницу профиля</a>
         {% if connection.approved %}
             <a href="{% url 'connect_room' room.code %}" class="btn">Подключиться к комнате</a>
         {% else %}
@@ -78,4 +78,24 @@
     <p>Ваш запрос на подключение к комнате ожидает подтверждения администратора.</p>
     <p>Пожалуйста, ожидайте. Мы уведомим вас, как только ваш запрос будет рассмотрен.</p>
 </body>
+
+
+<script language="javascript">
+    var connectionIDFromURL = window.location.pathname.split('/').filter(Boolean).pop(); // Получаем последний сегмент URL
+    var ws_url = 'ws://' + window.location.host + '/ws/approve_request_connection/';
+    var gendersSocket = new WebSocket(ws_url);
+
+    gendersSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        console.log(data)
+
+    if (data.connectionID == connectionIDFromURL) {
+        // Совпадение найдено, изменяем HTML-код кнопки
+        var btnContainer = document.querySelector('.btn-container');
+        btnContainer.innerHTML = `<a href="{% url 'profile' %}" class="btn">Перейти на страницу профиля</a> <a href="{% url 'connect_room' room.code %}" class="btn">Подключиться к комнате</a>`;
+    }
+
+    };
+</script>
+
 </html>

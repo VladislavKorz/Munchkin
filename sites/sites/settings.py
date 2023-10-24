@@ -268,6 +268,8 @@ LEVEL_GROUP_NAME = 'new_level'
 POWER_GROUP_NAME= 'new_power'
 GENDER_GROUP_NAME = 'new_gender'
 CONNECTION_REQUEST_GROUP_NAME = 'new_connection_request'
+APPROVE_CONNECTION_GROUP_NAME = 'approve_connection_request'
+ROOM_PLAYER_GROUP_NAME = 'new_room_player'
 
 
 LOGOUT_REDIRECT_URL = '/login/'  # Указываем путь к вашей собственной странице входа

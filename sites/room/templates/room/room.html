@@ -291,50 +291,52 @@
 
     raceSocket.onmessage = function(event) {
 
-
+        var code = "{{ room.code }}"
         var data = JSON.parse(event.data);
-        var playerRaceElement = document.querySelector(`[data-player-id="${data.playerId}"]`);
-        if (playerRaceElement) {
-            playerRaceElement.textContent = data.race;
+        if (code === data.room) {
+            var playerRaceElement = document.querySelector(`[data-player-id="${data.playerId}"]`);
+            if (playerRaceElement) {
+                playerRaceElement.textContent = data.race;
+            }
+
+
+            // Создаем новый блок таймлайна
+            var newTimelineBlock = document.createElement('div');
+            newTimelineBlock.classList.add('timeline');
+            var newTimelineContent = document.createElement('div');
+            newTimelineContent.classList.add('timeline-content');
+            var dateElement = document.createElement('span');
+            dateElement.classList.add('date');
+            var monthElement = document.createElement('span');
+            monthElement.classList.add('month');
+            monthElement.textContent = data.time;
+            var yearElement = document.createElement('span');
+            yearElement.classList.add('year');
+            yearElement.textContent = data.date;
+            dateElement.appendChild(monthElement);
+            dateElement.appendChild(yearElement);
+            var titleElement = document.createElement('h2');
+            titleElement.classList.add('title');
+            titleElement.style.background = '#eab715';
+            titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь расы ' + data.race;
+            var descriptionElement = document.createElement('p');
+            descriptionElement.classList.add('description');
+            descriptionElement.textContent = 'Игрок ' + data.username + ' изменил расу';
+            newTimelineContent.appendChild(dateElement);
+            newTimelineContent.appendChild(titleElement);
+            newTimelineContent.appendChild(descriptionElement);
+            newTimelineBlock.appendChild(newTimelineContent);
+            // Добавляем новый блок таймлайна к контейнеру таймлайнов
+            var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+            timelineContainer.prepend(newTimelineBlock);
+
+            // Уведомление о новом событии
+            mkNoti(
+                descriptionElement.textContent,
+                "Манчкин " + data.username + " сменил рассу, теперь он стал " + data.race + "!",
+                {status: "info"}
+            );
         }
-
-
-        // Создаем новый блок таймлайна
-        var newTimelineBlock = document.createElement('div');
-        newTimelineBlock.classList.add('timeline');
-        var newTimelineContent = document.createElement('div');
-        newTimelineContent.classList.add('timeline-content');
-        var dateElement = document.createElement('span');
-        dateElement.classList.add('date');
-        var monthElement = document.createElement('span');
-        monthElement.classList.add('month');
-        monthElement.textContent = data.time;
-        var yearElement = document.createElement('span');
-        yearElement.classList.add('year');
-        yearElement.textContent = data.date;
-        dateElement.appendChild(monthElement);
-        dateElement.appendChild(yearElement);
-        var titleElement = document.createElement('h2');
-        titleElement.classList.add('title');
-        titleElement.style.background = '#eab715';
-        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь расы ' + data.race;
-        var descriptionElement = document.createElement('p');
-        descriptionElement.classList.add('description');
-        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил расу';
-        newTimelineContent.appendChild(dateElement);
-        newTimelineContent.appendChild(titleElement);
-        newTimelineContent.appendChild(descriptionElement);
-        newTimelineBlock.appendChild(newTimelineContent);
-        // Добавляем новый блок таймлайна к контейнеру таймлайнов
-        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        timelineContainer.prepend(newTimelineBlock);
-
-        // Уведомление о новом событии
-        mkNoti(
-            descriptionElement.textContent,
-            "Манчкин " + data.username + " сменил рассу, теперь он стал " + data.race + "!",
-            {status: "info"}
-        );
     };
 
 </script>
@@ -345,47 +347,50 @@
     var classSocket = new WebSocket(ws_url);
 
     classSocket.onmessage = function(event) {
+        var code = "{{ room.code }}"
         var data = JSON.parse(event.data);
-        var playerClassElement = document.querySelector(`[data-player-id-2="${data.playerId}"]`);
-        if (playerClassElement) {
-            playerClassElement.textContent = data.class;
+        if (code === data.room) {
+            var playerClassElement = document.querySelector(`[data-player-id-2="${data.playerId}"]`);
+            if (playerClassElement) {
+                playerClassElement.textContent = data.class;
+            }
+
+            var newTimelineBlock = document.createElement('div');
+            newTimelineBlock.classList.add('timeline');
+            var newTimelineContent = document.createElement('div');
+            newTimelineContent.classList.add('timeline-content');
+            var dateElement = document.createElement('span');
+            dateElement.classList.add('date');
+            var monthElement = document.createElement('span');
+            monthElement.classList.add('month');
+            monthElement.textContent = data.time;
+            var yearElement = document.createElement('span');
+            yearElement.classList.add('year');
+            yearElement.textContent = data.date;
+            dateElement.appendChild(monthElement);
+            dateElement.appendChild(yearElement);
+            var titleElement = document.createElement('h2');
+            titleElement.classList.add('title');
+            titleElement.style.background = '#58b25e';
+            titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь класса ' + data.class;
+            var descriptionElement = document.createElement('p');
+            descriptionElement.classList.add('description');
+            descriptionElement.textContent = 'Игрок ' + data.username + ' изменил класс';
+            newTimelineContent.appendChild(dateElement);
+            newTimelineContent.appendChild(titleElement);
+            newTimelineContent.appendChild(descriptionElement);
+            newTimelineBlock.appendChild(newTimelineContent);
+            // Добавляем новый блок таймлайна к контейнеру таймлайнов
+            var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+            timelineContainer.prepend(newTimelineBlock);
+
+            // Уведомление о новом событии
+            mkNoti(
+                descriptionElement.textContent,
+                "Манчкин " + data.username + " сменил класс, теперь он стал " + data.class + "!",
+                {status: "info"}
+            );
         }
-
-        var newTimelineBlock = document.createElement('div');
-        newTimelineBlock.classList.add('timeline');
-        var newTimelineContent = document.createElement('div');
-        newTimelineContent.classList.add('timeline-content');
-        var dateElement = document.createElement('span');
-        dateElement.classList.add('date');
-        var monthElement = document.createElement('span');
-        monthElement.classList.add('month');
-        monthElement.textContent = data.time;
-        var yearElement = document.createElement('span');
-        yearElement.classList.add('year');
-        yearElement.textContent = data.date;
-        dateElement.appendChild(monthElement);
-        dateElement.appendChild(yearElement);
-        var titleElement = document.createElement('h2');
-        titleElement.classList.add('title');
-        titleElement.style.background = '#58b25e';
-        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь класса ' + data.class;
-        var descriptionElement = document.createElement('p');
-        descriptionElement.classList.add('description');
-        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил класс';
-        newTimelineContent.appendChild(dateElement);
-        newTimelineContent.appendChild(titleElement);
-        newTimelineContent.appendChild(descriptionElement);
-        newTimelineBlock.appendChild(newTimelineContent);
-        // Добавляем новый блок таймлайна к контейнеру таймлайнов
-        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        timelineContainer.prepend(newTimelineBlock);
-
-        // Уведомление о новом событии
-        mkNoti(
-            descriptionElement.textContent,
-            "Манчкин " + data.username + " сменил класс, теперь он стал " + data.class + "!",
-            {status: "info"}
-        );
 
     };
 </script>
@@ -397,55 +402,57 @@
 
     levelSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
+        var code = "{{ room.code }}"
 
+        if (code === data.room) {
             // Найти элемент с нужным игроком
-        var playerElement = document.querySelector(`[data-player-id-level="${data.playerId}"]`);
-        var playerTotal = document.querySelector(`[data-player-id-total1="${data.playerId}"]`);
+            var playerElement = document.querySelector(`[data-player-id-level="${data.playerId}"]`);
+            var playerTotal = document.querySelector(`[data-player-id-total1="${data.playerId}"]`);
 
-        if (playerElement) {
-            playerElement.textContent = data.level;
+            if (playerElement) {
+                playerElement.textContent = data.level;
+            }
+
+            if (playerTotal) {
+                playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
+            }
+
+            var newTimelineBlock = document.createElement('div');
+            newTimelineBlock.classList.add('timeline');
+            var newTimelineContent = document.createElement('div');
+            newTimelineContent.classList.add('timeline-content');
+            var dateElement = document.createElement('span');
+            dateElement.classList.add('date');
+            var monthElement = document.createElement('span');
+            monthElement.classList.add('month');
+            monthElement.textContent = data.time;
+            var yearElement = document.createElement('span');
+            yearElement.classList.add('year');
+            yearElement.textContent = data.date;
+            dateElement.appendChild(monthElement);
+            dateElement.appendChild(yearElement);
+            var titleElement = document.createElement('h2');
+            titleElement.classList.add('title');
+            titleElement.style.background = '#02a2dd';
+            titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь ' + data.level + ' уровня';
+            var descriptionElement = document.createElement('p');
+            descriptionElement.classList.add('description');
+            descriptionElement.textContent = 'Игрок ' + data.username + ' изменил уровень';
+            newTimelineContent.appendChild(dateElement);
+            newTimelineContent.appendChild(titleElement);
+            newTimelineContent.appendChild(descriptionElement);
+            newTimelineBlock.appendChild(newTimelineContent);
+            // Добавляем новый блок таймлайна к контейнеру таймлайнов
+            var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+            timelineContainer.prepend(newTimelineBlock);
+
+            // Уведомление о новом событии
+            mkNoti(
+                descriptionElement.textContent,
+                "Манчкин " + data.username + " сменил уровень, теперь он стал " + data.level + "!",
+                {status: "info"}
+            );
         }
-
-        if (playerTotal) {
-            playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
-        }
-
-        var newTimelineBlock = document.createElement('div');
-        newTimelineBlock.classList.add('timeline');
-        var newTimelineContent = document.createElement('div');
-        newTimelineContent.classList.add('timeline-content');
-        var dateElement = document.createElement('span');
-        dateElement.classList.add('date');
-        var monthElement = document.createElement('span');
-        monthElement.classList.add('month');
-        monthElement.textContent = data.time;
-        var yearElement = document.createElement('span');
-        yearElement.classList.add('year');
-        yearElement.textContent = data.date;
-        dateElement.appendChild(monthElement);
-        dateElement.appendChild(yearElement);
-        var titleElement = document.createElement('h2');
-        titleElement.classList.add('title');
-        titleElement.style.background = '#02a2dd';
-        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь ' + data.level + ' уровня';
-        var descriptionElement = document.createElement('p');
-        descriptionElement.classList.add('description');
-        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил уровень';
-        newTimelineContent.appendChild(dateElement);
-        newTimelineContent.appendChild(titleElement);
-        newTimelineContent.appendChild(descriptionElement);
-        newTimelineBlock.appendChild(newTimelineContent);
-        // Добавляем новый блок таймлайна к контейнеру таймлайнов
-        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        timelineContainer.prepend(newTimelineBlock);
-
-        // Уведомление о новом событии
-        mkNoti(
-            descriptionElement.textContent,
-            "Манчкин " + data.username + " сменил уровень, теперь он стал " + data.level + "!",
-            {status: "info"}
-        );
-
     };
 </script>
 
@@ -456,55 +463,57 @@
 
     powerSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
+        var code = "{{ room.code }}"
 
+        if (code === data.room) {
             // Найти элемент с нужным игроком
-        var playerPowerElement = document.querySelector(`[data-player-id-power="${data.playerId}"]`);
-        var playerTotal = document.querySelector(`[data-player-id-total1="${data.playerId}"]`);
+            var playerPowerElement = document.querySelector(`[data-player-id-power="${data.playerId}"]`);
+            var playerTotal = document.querySelector(`[data-player-id-total1="${data.playerId}"]`);
 
-        if (playerPowerElement) {
-            playerPowerElement.textContent = data.power;
+            if (playerPowerElement) {
+                playerPowerElement.textContent = data.power;
+            }
+
+            if (playerTotal) {
+                playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
+            }
+
+            var newTimelineBlock = document.createElement('div');
+            newTimelineBlock.classList.add('timeline');
+            var newTimelineContent = document.createElement('div');
+            newTimelineContent.classList.add('timeline-content');
+            var dateElement = document.createElement('span');
+            dateElement.classList.add('date');
+            var monthElement = document.createElement('span');
+            monthElement.classList.add('month');
+            monthElement.textContent = data.time;
+            var yearElement = document.createElement('span');
+            yearElement.classList.add('year');
+            yearElement.textContent = data.date;
+            dateElement.appendChild(yearElement);
+            dateElement.appendChild(monthElement);
+            var titleElement = document.createElement('h2');
+            titleElement.classList.add('title');
+            titleElement.style.background = '#9f84c4';
+            titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь ' + data.power + ' мощности';
+            var descriptionElement = document.createElement('p');
+            descriptionElement.classList.add('description');
+            descriptionElement.textContent = 'Игрок ' + data.username + ' изменил мощность';
+            newTimelineContent.appendChild(dateElement);
+            newTimelineContent.appendChild(titleElement);
+            newTimelineContent.appendChild(descriptionElement);
+            newTimelineBlock.appendChild(newTimelineContent);
+            // Добавляем новый блок таймлайна к контейнеру таймлайнов
+            var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
+            timelineContainer.prepend(newTimelineBlock);
+
+            // Уведомление о новом событии
+            mkNoti(
+                descriptionElement.textContent,
+                "Манчкин " + data.username + " сменил мощность, теперь он стал " + data.power + "!",
+                {status: "info"}
+            );
         }
-
-        if (playerTotal) {
-            playerTotal.textContent = parseInt(data.level) + parseInt(data.power);
-        }
-
-        var newTimelineBlock = document.createElement('div');
-        newTimelineBlock.classList.add('timeline');
-        var newTimelineContent = document.createElement('div');
-        newTimelineContent.classList.add('timeline-content');
-        var dateElement = document.createElement('span');
-        dateElement.classList.add('date');
-        var monthElement = document.createElement('span');
-        monthElement.classList.add('month');
-        monthElement.textContent = data.time;
-        var yearElement = document.createElement('span');
-        yearElement.classList.add('year');
-        yearElement.textContent = data.date;
-        dateElement.appendChild(yearElement);
-        dateElement.appendChild(monthElement);
-        var titleElement = document.createElement('h2');
-        titleElement.classList.add('title');
-        titleElement.style.background = '#9f84c4';
-        titleElement.innerHTML = '<span class="fa fa-chevron-up" aria-hidden="true"></span> ' + data.username + ' теперь ' + data.power + ' мощности';
-        var descriptionElement = document.createElement('p');
-        descriptionElement.classList.add('description');
-        descriptionElement.textContent = 'Игрок ' + data.username + ' изменил мощность';
-        newTimelineContent.appendChild(dateElement);
-        newTimelineContent.appendChild(titleElement);
-        newTimelineContent.appendChild(descriptionElement);
-        newTimelineBlock.appendChild(newTimelineContent);
-        // Добавляем новый блок таймлайна к контейнеру таймлайнов
-        var timelineContainer = document.getElementsByClassName("panel-timeline")[0];
-        timelineContainer.prepend(newTimelineBlock);
-
-        // Уведомление о новом событии
-        mkNoti(
-            descriptionElement.textContent,
-            "Манчкин " + data.username + " сменил мощность, теперь он стал " + data.power + "!",
-            {status: "info"}
-        );
-
     };
 </script>
 
@@ -613,7 +622,7 @@ function acceptConnection(connectionID) {
         })
         .then(data => {
             console.log(data); // Если запрос успешно обработан
-            
+
             // Находим элемент блока и скрываем его
             var requestBlock = document.querySelector(`.connection-request.connectionID-${connectionID}`);
             if (requestBlock) {
@@ -634,7 +643,7 @@ function rejectConnection(connectionID) {
         })
         .then(data => {
             console.log(data); // Если запрос успешно обработан
-            
+
             // Находим элемент блока и скрываем его
             var requestBlock = document.querySelector(`.connection-request.connectionID-${connectionID}`);
             if (requestBlock) {
@@ -659,7 +668,7 @@ function rejectConnection(connectionID) {
         })
         .then(data => {
             console.log(data); // Если запрос успешно обработан
-            
+
             // Находим элемент блока и скрываем его
             var requestBlock = document.querySelector(`.connection-request.connectionID-${connection_id}`);
             if (requestBlock) {
@@ -680,7 +689,7 @@ function rejectConnectionhtml(connection_id) {
         })
         .then(data => {
             console.log(data); // Если запрос успешно обработан
-            
+
             // Находим элемент блока и скрываем его
             var requestBlock = document.querySelector(`.connection-request.connectionID-${connection_id}`);
             if (requestBlock) {
@@ -691,6 +700,120 @@ function rejectConnectionhtml(connection_id) {
 }
 
 </script>
+
+
+
+<script language="javascript">
+    var code = "{{ room.code }}"
+    var races = "{{ races }}"
+    var ws_url = 'ws://' + window.location.host + '/ws/room_player/';
+    var gendersSocket = new WebSocket(ws_url);
+
+    gendersSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+
+    if (data.code == code) {
+        console.log(data)
+        addNewPlayer(data)
+    
+    }
+
+    };
+
+
+function addNewPlayer(playerData) {
+    var tableBody = document.querySelector('.table tbody');
+
+    // Create a new row
+    var newRow = document.createElement('tr');
+    newRow.classList.add('inner-box', 'player');
+    newRow.setAttribute('player', playerData.pk);
+
+    var genderIcon;
+    if (playerData.gender === 'M') {
+        genderIcon = '<i class="fa fa-mars" gender="true" aria-hidden="true"></i>';
+    } else if (playerData.gender === 'F') {
+        genderIcon = '<i class="fa fa-venus" gender="true" aria-hidden="true"></i>';
+    } else {
+        genderIcon = '<i class="fa fa-tree" gender="true" aria-hidden="true"></i>';
+    }
+
+    // Create the HTML content for the row
+    var rowContent = `
+        <th scope="row">
+            <div class="player-date" data-toggle="modal" data-target="#playerDataEditModal">
+                <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total' data-player-id-total1=${playerData.playerId}>${playerData.power + playerData.level}</span></h2>
+                <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level' data-player-id-level=${playerData.playerId}>${playerData.level}</span>
+                        <i class="fa fa-gavel" aria-hidden="true"></i> <span class='power' data-player-id-power=${playerData.playerId}>${playerData.power}</span></p>
+            </div>
+        </th>
+
+        <td>
+            <div class="player-img player-gender" data-player-id-gender=${playerData.playerId}>
+                ${genderIcon}
+                <img src=${playerData.image} alt="Аватар пользователя />
+            </div>
+            <div class="username">
+                <p>${playerData.username}</p>
+            </div>
+        </td>
+
+        <td>
+            <div class="player-wrap">
+                <div class="meta d-inline-flex">
+                    <div class="race px-2">
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        <a href="#" class="btn btn-link dropdown-toggle player-race" data-bs-toggle="dropdown" aria-expanded="false" data-player-id=${playerData.playerId}>
+                            ${playerData.race}
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            {% for player_race in races %}
+                                <li><a class="dropdown-item" href="#">{{ player_race.1 }}</a></li>
+                            {% endfor %}
+
+                        </ul>
+                    {% comment %} </div> {% endcomment %}
+                    <div class="class px-2">
+                        <div class="btn-group">
+                            <i class="fa fa-gamepad" aria-hidden="true"></i>
+                        </div>
+                            <a href="#" class="btn btn-link dropdown-toggle player-class" data-bs-toggle="dropdown" aria-expanded="false"  data-player-id-2=${playerData.playerId}>
+                                ${playerData.class}
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% for player_class in classes %}
+                                    {% comment %} <li><a class="dropdown-item" href="#">{{ player_class.0 }}</a></li> {% endcomment %}
+                                    <li><a class="dropdown-item" href="#">{{ player_class.1 }}</a></li>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </td>
+
+        <td>
+            <div class="primary-btn">
+                <a class="btn btn-primary" href="#"><i class="fa fa-bolt"
+                        aria-hidden="true"></i></a>
+            </div>
+        </td>
+    `;
+
+    newRow.innerHTML = rowContent;
+
+    // Append the new row to the table
+    tableBody.appendChild(newRow);
+}
+
+</script>
+
+
+
 
 <script src="{% static 'room/js/playerDataUpdate.js' %}"></script>
 <script src="{% static 'room/js/playerGenderChangingAjax.js' %}"></script>
