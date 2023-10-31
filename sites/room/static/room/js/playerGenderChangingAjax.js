@@ -26,11 +26,6 @@ $(document).on('click', '.player-gender', function () {
             } else {
                 gender_val = 'она храбрая женщина'
             }
-            // mkNoti(
-            //     "Смена пола",
-            //     "Манчкин " + $player.find('.player-name').text() + " сменил пол, теперь " + gender_val + "!",
-            //     { status: "info" }
-            // );
         }
     });
 });
