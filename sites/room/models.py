@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 from users.models import CustomUser
 
-
 ROOMS_CODE_LENGHT = 5
 
 def get_code():
@@ -46,6 +45,7 @@ class Rooms(models.Model):
 class ConnectionRequest(models.Model):
     room = models.ForeignKey("room.Rooms", verbose_name="Комната для подключения", on_delete=models.SET_NULL, null=True, related_name='connection')
     player = models.ForeignKey("users.CustomUser", verbose_name="Подключающийся игрок", on_delete=models.SET_NULL, null=True, related_name='connectionPlayer')
+    spectator = models.BooleanField('Зритель', default=False)
     approved = models.BooleanField(default=False)
     create = models.DateTimeField(verbose_name='Дата создания заявки на подключение', auto_now_add=True)
     update = models.DateTimeField(verbose_name='Дата обновления заявки на подключение', auto_now=True)

@@ -35,7 +35,7 @@
                 {% for connection in connections %}
                 <div class="connection-request connectionID-{{ connection.id }}" >
                     <p>Запрос на подключение {{ connection.id }}</p>
-                    <p>Игрок ID: {{ connection.player.id }}</p>
+                    <p>{% if connection.spectator %}  Зритель {% else %}  Игрок {% endif %} ID: {{ connection.player.id }}</p>
                     <p>Имя пользователя: {{ connection.player.username }}</p>
                     <p>Дата запроса на подключение: {{ connection.create|date:"H:i d.m" }}</p>
                     <button onclick="acceptConnectionhtml({{ connection.id }})">Принять</button>
@@ -583,10 +583,12 @@
 
     connectionSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
+        console.log(data)
 
         var code = "{{ room.code }}"
         var admin = "{{ room.admin }}"
         var request_user = "{{ request.user.email }}"
+        var user = (data.spectator === false) ? 'Игрок' : 'Зритель';
 
         if (code === data.code && admin === request_user) {
             // Создаем элемент блока с информацией о запросе на подключение
@@ -595,7 +597,7 @@
             requestBlock.classList.add(`connectionID-${data.connectionID}`);
             requestBlock.innerHTML = `
                 <p>Запрос на подключение ${data.connectionID}</p>
-                <p>Игрок ID: ${data.playerId}</p>
+                <p>${user} ID: ${data.playerId}</p>
                 <p>Имя пользователя: ${data.username}</p>
                 <p>Дата запроса на подключение: ${data.created_at}</p>
                 <button onclick="acceptConnection(${data.connectionID})">Принять</button>

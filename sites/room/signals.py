@@ -68,7 +68,7 @@ def create_player_connection(sender, instance, created, **kwargs):
         async_to_sync(channel_layer.group_send)(
             settings.CONNECTION_REQUEST_GROUP_NAME, {
                 "type": 'new_connection_request',
-                "content": json.dumps({'connectionID': instance.id, 'code': instance.room.code, 'playerId': instance.player.id, 'username': instance.player.username, 'created_at': created_at.strftime("%H:%M %d.%m")}),
+                "content": json.dumps({'connectionID': instance.id, 'code': instance.room.code, 'playerId': instance.player.id, 'username': instance.player.username, 'created_at': created_at.strftime("%H:%M %d.%m"), 'spectator': instance.spectator}),
             })
 
 
@@ -92,4 +92,3 @@ def create_room_player(sender, instance, created, **kwargs):
                 "type": 'new_room_player',
                 "content": json.dumps({'absolute_url':instance.player.get_absolute_url(), 'code':instance.room.code, 'gender': instance.gender, 'playerId': instance.id, 'username': instance.player.username, 'gender_display': instance.get_gender_display(), 'level': instance.get_leavel(), 'power': instance.get_power(), 'image': instance.player.get_photo_url(), 'race': instance.get_racer(), 'class': instance.get_class()}),
             })
-

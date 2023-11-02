@@ -141,9 +141,10 @@ def connect_room(request, room):
                 return redirect('profile')
 
             else:
-                # Создайте запись в RoomPlayer, связав пользователя с комнатой
-                room_player = RoomPlayer(room=room, player=user)
-                room_player.save()
+                if not connection.spectator:
+                    # Создайте запись в RoomPlayer, связав пользователя с комнатой
+                    room_player = RoomPlayer(room=room, player=user)
+                    room_player.save()
 
                 # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
@@ -162,6 +163,11 @@ def make_connection_request(request):
         # Найдите комнату по её коду
         room = Rooms.objects.get(code=room_code)
 
+        my_checkbox = request.POST.get('my_checkbox')
+
+        # Преобразуйте значение чекбокса в тип bool
+        my_checkbox = my_checkbox == 'on'
+
         if room.owner==request.user or room.admin==request.user:
             return HttpResponseRedirect(reverse('room', args=(room,)))
 
@@ -170,11 +176,15 @@ def make_connection_request(request):
 
         elif any([i.approved==True for i in request.user.connectionPlayer.all()]):
             return HttpResponseRedirect(reverse('room', args=(room,)))
-            
+
         else:
             # Создайте запись в RoomPlayer, связав пользователя с комнатой
-            room_player = ConnectionRequest(room=room, player=user)
-            room_player.save()
+            if my_checkbox:
+                room_player = ConnectionRequest(room=room, player=user, spectator=True)
+                room_player.save()
+            else:
+                room_player = ConnectionRequest(room=room, player=user)
+                room_player.save()
 
             # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
