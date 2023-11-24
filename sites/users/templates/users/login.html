@@ -68,10 +68,12 @@
                             {{ form.password }}
                         </div>
                         <button type="submit" class="btn btn-primary">Login</button>
+                        <a href="{% url 'feedback' %}" class="btn btn-primary">Provide Feedback</a>
                     </form>
                 </div>
                 <div class="card-footer text-center">
                   <p>Don't have an account? <a href="{% url 'users_register' %}">Register</a></p>
+
                 </div>
             </div>
         </div>

@@ -155,46 +155,52 @@ def connect_room(request, room):
 
 def make_connection_request(request):
     if request.method == 'POST':
-        room_code = request.POST.get('room')
+        try:
+            room_code = request.POST.get('room')
 
-        # Получите текущего пользователя (CustomUser)
-        user = request.user
+            # Получите текущего пользователя (CustomUser)
+            user = request.user
 
-        # Найдите комнату по её коду
-        room = Rooms.objects.get(code=room_code)
+            # Найдите комнату по её коду
+            room = Rooms.objects.get(code=room_code)
 
-        my_checkbox = request.POST.get('my_checkbox')
+            my_checkbox = request.POST.get('my_checkbox')
 
-        # Преобразуйте значение чекбокса в тип bool
-        my_checkbox = my_checkbox == 'on'
+            # Преобразуйте значение чекбокса в тип bool
+            my_checkbox = my_checkbox == 'on'
 
-        if room.owner==request.user or room.admin==request.user:
-            return HttpResponseRedirect(reverse('room', args=(room,)))
+            if room.owner==request.user or room.admin==request.user:
+                return HttpResponseRedirect(reverse('room', args=(room,)))
 
-        elif room.room_type == 'C':
-            return render(request, 'room/solo_room_error.html')
+            elif room.room_type == 'C':
+                return render(request, 'room/solo_room_error.html')
 
-        elif any([i.approved==True for i in request.user.connectionPlayer.all()]):
-            return HttpResponseRedirect(reverse('room', args=(room,)))
+            elif any([i.approved==True for i in request.user.connectionPlayer.all()]):
+                return HttpResponseRedirect(reverse('room', args=(room,)))
 
-        else:
-            # Создайте запись в RoomPlayer, связав пользователя с комнатой
-            if my_checkbox:
-                room_player = ConnectionRequest(room=room, player=user, spectator=True)
-                room_player.save()
             else:
-                room_player = ConnectionRequest(room=room, player=user)
-                room_player.save()
+                # Создайте запись в RoomPlayer, связав пользователя с комнатой
+                if my_checkbox:
+                    room_player = ConnectionRequest(room=room, player=user, spectator=True)
+                    room_player.save()
+                else:
+                    room_player = ConnectionRequest(room=room, player=user)
+                    room_player.save()
 
-            # Верните что-то, что должно отобразиться после успешного подключения к комнате
+                # Верните что-то, что должно отобразиться после успешного подключения к комнате
 
-            # context = {'room_code': room_code, 'user': user, 'connection': room_player}
-            # return render(request, 'users/wait_to_connect.html', context)
+                # context = {'room_code': room_code, 'user': user, 'connection': room_player}
+                # return render(request, 'users/wait_to_connect.html', context)
 
-            url = reverse('wait_to_connect', args=(room_player.id,))
+                url = reverse('wait_to_connect', args=(room_player.id,))
 
-            # Перенаправьте пользователя на новую страницу
-            return HttpResponseRedirect(url)
+                # Перенаправьте пользователя на новую страницу
+                return HttpResponseRedirect(url)
+
+        except Rooms.DoesNotExist:
+                # Обработка ситуации, когда комната с указанным кодом не найдена
+                # Верните сообщение об ошибке или выполните другие действия по вашему усмотрению
+                return HttpResponse("Код комнаты не может быть пустым.")
 
 
 def wait_to_connect(request, connection_id):
@@ -214,6 +220,7 @@ def make_qr_connection_request(request, code):
 
         # Получите текущего пользователя (CustomUser)
         user = request.user
+
 
         # Найдите комнату по её коду
         room = Rooms.objects.get(code=code)

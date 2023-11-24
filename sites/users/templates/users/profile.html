@@ -58,6 +58,9 @@
                 Подключиться к комнате
               </button>
             </li>
+            <li class='mx-3'>
+              <a href="{% url 'feedback' %}" class="btn btn-primary">Обратная связь</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -137,6 +140,7 @@
             aria-hidden="true"></i> Редактировать профиль</button>
         <a class="btn btn-outline-secondary float-end" href="{% url 'logout' %}"><i class="fa fa-sign-out"
             aria-hidden="true"></i> Выйти</a>
+
       </div>
     </div>
     <div class="col-md-8">
@@ -259,10 +263,11 @@
             <input type="text" class="form-control" id="InputRoomCode" aria-describedby="InputRoomCodeHelp" name="room">
           </div>
           <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1" name="my_checkbox">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1" name="my_checkbox" >
             <label class="form-check-label" for="exampleCheck1">Подключиться как зритель</label>
           </div>
           <button type="button" id="connectButton" class="btn btn-outline-secondary">Отсканируйте QR Код комнаты</button>
+ 
           <button type="submit" class="btn btn-primary">Подключиться</button>
         </form>
       </div>
@@ -272,15 +277,23 @@
 {% endblock body %}
 {% block scripts %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var connectButton = document.getElementById('connectButton');
-    var inputRoomCode = document.getElementById('InputRoomCode');
+document.addEventListener('DOMContentLoaded', function() {
+  var connectButton = document.getElementById('connectButton');
+  var inputRoomCode = document.getElementById('InputRoomCode');
 
-    connectButton.addEventListener('click', function() {
-      var roomCode = inputRoomCode.value;
+  connectButton.addEventListener('click', function() {
+    var roomCode = inputRoomCode.value;
+
+    // Проверяем, если roomCode не пустой
+    if (roomCode.trim() !== '') {
       window.location.href = '/room/generate_qr_code/' + roomCode + '/';
-    });
+    } else {
+      // Если roomCode пустой, выводим сообщение об ошибке
+      alert('Код комнаты не может быть пустым.');
+    }
   });
+});
+
 </script>
 
 

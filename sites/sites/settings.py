@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'users',
     'home',
     'meta',
+    'feedback',
     'room.apps.RoomConfig',
 ]
 
