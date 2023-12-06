@@ -14,6 +14,7 @@ def changeRoomPlayerAjax(request):
         user_room = RoomPlayer.objects.get(pk=request.POST.get('user_room'))
         if request.POST.get('gender'):
             user_room.gender = request.POST.get('gender')
+            user_room.last_request_user = request.user
             user_room.save()
             status = 200
             status_message = 'Ok'
@@ -25,9 +26,9 @@ def changeRoomPlayerAjax(request):
                 leavel = PlayerLeavel.objects.filter(player=user_room).first()
                 power = PlayerPower.objects.filter(player=user_room).first()
                 if str(data.get('level')) != str(leavel.leavel):
-                    PlayerLeavel.objects.create(player=user_room, leavel = data.get('level'))
+                    PlayerLeavel.objects.create(player=user_room, leavel = data.get('level'), creator=request.user)
                 if str(data.get('power')) != str(power.power):
-                    PlayerPower.objects.create(player=user_room, power = data.get('power'))
+                    PlayerPower.objects.create(player=user_room, power = data.get('power'), creator=request.user)
 
 
         return HttpResponse(json.dumps({'message':status_message}), content_type='application/json', status=status)

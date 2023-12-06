@@ -37,6 +37,7 @@ class CustomUser(AbstractUser):
 
     name = models.CharField('имя пользователя', max_length=64, blank=True, null=True)
     email_verify = models.BooleanField(default=False)
+    guest = models.BooleanField(default=False)
     email_confirmation_code = models.CharField(max_length=6, blank=True, null=True)
     language = models.CharField("Язык", max_length=2, choices=LANGUAGE_CHOICES, default='ru')
     photo = models.ImageField(

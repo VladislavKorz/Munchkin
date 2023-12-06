@@ -20,20 +20,20 @@ from .models import *
 from .models import PlayerClass
 
 
-def broadcast_race(race, player_id, username, date, time, room):
+def broadcast_race(user, race, player_id, username, date, time, room):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         settings.RACE_GROUP_NAME, {
             "type": 'new_race',
-            "content": json.dumps({'race': race, 'playerId': player_id, 'username': username, 'date': date, 'time': time, 'room': room}),
+            "content": json.dumps({'user': user, 'race': race, 'playerId': player_id, 'username': username, 'date': date, 'time': time, 'room': room}),
         })
 
-def broadcast_class(player_class, player_id, username, date, time, room):
+def broadcast_class(user, player_class, player_id, username, date, time, room):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         settings.CLASS_GROUP_NAME, {
             "type": 'new_class',
-            "content": json.dumps({'class': player_class, 'playerId': player_id, 'username': username, 'date': date, 'time': time, 'room': room}),
+            "content": json.dumps({'user': user, 'class': player_class, 'playerId': player_id, 'username': username, 'date': date, 'time': time, 'room': room}),
         })
 
 @login_required
@@ -43,8 +43,9 @@ def CreateRoomViews(request):
     rules_book = request.user.rulesBook.all().filter(
         pk=request.POST.get("rules_book")).first()
     only_verified_users = request.POST.get("email_verified") == "on"
+    change_permission = request.POST.get("change_permission") == "on"
     room = Rooms.objects.create(room_type=type_room, leavel_to_win=leavel_to_win,
-                                rules_book=rules_book, admin=request.user, owner=request.user, only_verified_users=only_verified_users)
+                                rules_book=rules_book, admin=request.user, owner=request.user, only_verified_users=only_verified_users, change_permission=change_permission)
     RoomPlayer.objects.create(
         room=room, player=request.user, order=1, gender=request.user.gender)
     return HttpResponseRedirect(reverse('room', args=(room.code,)))
@@ -91,7 +92,7 @@ def update_player_class(request, player_id, class_value, class_name):
 
     player_class = PlayerClass.objects.create(player=player, value=class_value)
     created_at = player_class.create
-    broadcast_class(class_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"), player.room.code)
+    broadcast_class(request.user.username, class_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"), player.room.code)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -102,7 +103,7 @@ def update_player_race(request, player_id, race_value, race_name):
 
     race = PlayerRace.objects.create(player=player, value=race_value)
     created_at = race.create
-    broadcast_race(race_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"), player.room.code)
+    broadcast_race(request.user.username, race_name, player_id, player.player.username, created_at.strftime("%d.%m"), created_at.strftime("%H:%M"), player.room.code)
 
     # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return JsonResponse({'message': 'Данные успешно обновлены'})

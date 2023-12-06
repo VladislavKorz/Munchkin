@@ -11,6 +11,7 @@
 {% block body %}
 
 
+
 <div class="combat-room">
     <div class="container">
         <div class="row">
@@ -64,24 +65,68 @@
                                     {% for player in room.player.all %}
                                     <tr class="inner-box player" player='{{ player.pk }}'>
                                         <th scope="row">
-                                            <div class="player-date" data-toggle="modal" data-target="#playerDataEditModal">
-                                                <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total' data-player-id-total1="{{ player.pk }}">{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
-                                                <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level' data-player-id-level="{{ player.pk }}">{{player.get_leavel}}</span>
-                                                        <i class="fa fa-gavel" aria-hidden="true"></i> <span class='power' data-player-id-power="{{ player.pk }}">{{player.get_power}}</span></p>
-                                            </div>
-                                        </th>
-                                        <td>
-                                            <div class="player-img player-gender" data-player-id-gender="{{ player.pk }}">
-                                                {% if player.gender == 'M' %}
-                                                <i class="fa fa-mars" gender ="true" aria-hidden="true"></i>
-                                                {% elif player.gender == 'F' %}
-                                                <i class="fa fa-venus" gender ="true" aria-hidden="true"></i>
+                                            {% if request.user.connectionPlayer.last.spectator %}
+                                                <div  data-toggle="modal" data-target="#playerDataEditModal">
+                                                    <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total' data-player-id-total1="{{ player.pk }}">{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
+                                                    <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level' data-player-id-level="{{ player.pk }}">{{player.get_leavel}}</span>
+                                                            <i class="fa fa-gavel" aria-hidden="true"></i> <span class='power' data-player-id-power="{{ player.pk }}">{{player.get_power}}</span></p>
+                                                </div>
+                                            {% else %}
+                                                {% if room.change_permission or request.user == player.player %}
+                                                <div class="player-date" data-toggle="modal" data-target="#playerDataEditModal">
+                                                    <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total' data-player-id-total1="{{ player.pk }}">{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
+                                                    <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level' data-player-id-level="{{ player.pk }}">{{player.get_leavel}}</span>
+                                                            <i class="fa fa-gavel" aria-hidden="true"></i> <span class='power' data-player-id-power="{{ player.pk }}">{{player.get_power}}</span></p>
+                                                </div>
                                                 {% else %}
-                                                <i class="fa fa-tree" gender ="true" aria-hidden="true"></i>
+                                                    <div  data-toggle="modal" data-target="#playerDataEditModal">
+                                                    <h2><i class="fa fa-bolt" aria-hidden="true"></i> <span class='total' data-player-id-total1="{{ player.pk }}">{{player.leavel.first.leavel|add:player.power.first.power}}</span></h2>
+                                                    <p><i class="fa fa-line-chart" aria-hidden="true"></i> <span class='level' data-player-id-level="{{ player.pk }}">{{player.get_leavel}}</span>
+                                                            <i class="fa fa-gavel" aria-hidden="true"></i> <span class='power' data-player-id-power="{{ player.pk }}">{{player.get_power}}</span></p>
+                                                    </div>
                                                 {% endif %}
-                                                <img src="{{ player.player.get_photo_url }}"
-                                                    alt="Аватар пользователя {{player.player.user}}" />
-                                            </div>
+                                            {% endif %}
+                                        </th>
+                                        <td>{% if request.user.connectionPlayer.last.spectator %}
+                                                <div class="player-img" data-player-id-gender="{{ player.pk }}">
+                                                        {% if player.gender == 'M' %}
+                                                        <i class="fa fa-mars" gender ="true" aria-hidden="true"></i>
+                                                        {% elif player.gender == 'F' %}
+                                                        <i class="fa fa-venus" gender ="true" aria-hidden="true"></i>
+                                                        {% else %}
+                                                        <i class="fa fa-tree" gender ="true" aria-hidden="true"></i>
+                                                        {% endif %}
+                                                    <img src="{{ player.player.get_photo_url }}"
+                                                        alt="Аватар пользователя {{player.player.user}}" />
+                                                </div>
+                                            {% else %}
+                                                {% if room.change_permission or request.user == player.player %}
+                                                    <div class="player-img player-gender" data-player-id-gender="{{ player.pk }}">
+                                                            {% if player.gender == 'M' %}
+                                                            <i class="fa fa-mars" gender ="true" aria-hidden="true"></i>
+                                                            {% elif player.gender == 'F' %}
+                                                            <i class="fa fa-venus" gender ="true" aria-hidden="true"></i>
+                                                            {% else %}
+                                                            <i class="fa fa-tree" gender ="true" aria-hidden="true"></i>
+                                                            {% endif %}
+                                                        <img src="{{ player.player.get_photo_url }}"
+                                                            alt="Аватар пользователя {{player.player.user}}" />
+                                                    </div>
+                                                {% else %}
+                                                    <div class="player-img" data-player-id-gender="{{ player.pk }}">
+                                                        {% if player.gender == 'M' %}
+                                                        <i class="fa fa-mars" gender ="true" aria-hidden="true"></i>
+                                                        {% elif player.gender == 'F' %}
+                                                        <i class="fa fa-venus" gender ="true" aria-hidden="true"></i>
+                                                        {% else %}
+                                                        <i class="fa fa-tree" gender ="true" aria-hidden="true"></i>
+                                                        {% endif %}
+                                                    <img src="{{ player.player.get_photo_url }}"
+                                                        alt="Аватар пользователя {{player.player.user}}" />
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
                                             <div class="username">
                                                 <p>{{ player.player.username }}</p>
                                             </div>
@@ -95,8 +140,21 @@
                                                     <div class="race px-2">
                                                         <div class="d-flex align-items-center">
                                                             <i class="fa fa-user" aria-hidden="true"></i>
-                                                        <a href="#" class="btn btn-link dropdown-toggle player-race" data-bs-toggle="dropdown" aria-expanded="false" data-player-id="{{ player.pk }}">
+                                                        {% if request.user.connectionPlayer.last.spectator %}
+                                                        <a href="#" class="btn btn-link dropdown-toggle player-race" data-bs-toggle="dropdown" aria-expanded="false" data-player-id="{{ player.pk }}" disabled>
                                                             {{ player.get_racer }}
+                                                            </a>
+                                                        {% else %}
+                                                            {% if room.change_permission or request.user == player.player %}
+                                                                <a href="#" class="btn btn-link dropdown-toggle player-race" data-bs-toggle="dropdown" aria-expanded="false" data-player-id="{{ player.pk }}">
+                                                                    {{ player.get_racer }}
+                                                                    </a>
+                                                            {% else %}
+                                                                <a href="#" class="btn btn-link dropdown-toggle player-race" data-bs-toggle="dropdown" aria-expanded="false" data-player-id="{{ player.pk }}" disabled>
+                                                                    {{ player.get_racer }}
+                                                                    </a>
+                                                            {% endif %}
+                                                        {% endif %}
                                                         </a>
 
                                                         <ul class="dropdown-menu">
@@ -111,9 +169,22 @@
                                                         <div class="btn-group">
                                                             <i class="fa fa-gamepad" aria-hidden="true"></i>
                                                         </div>
-                                                            <a href="#" class="btn btn-link dropdown-toggle player-class" data-bs-toggle="dropdown" aria-expanded="false"  data-player-id-2="{{ player.pk }}">
+                                                        {% if request.user.connectionPlayer.last.spectator %}
+                                                            <a href="#" class="btn btn-link dropdown-toggle player-class" data-bs-toggle="dropdown" aria-expanded="false"  data-player-id-2="{{ player.pk }}" disabled>
                                                                 {{ player.get_class }}
                                                             </a>
+                                                        {% else %}
+                                                            {% if room.change_permission or request.user == player.player %}
+                                                                <a href="#" class="btn btn-link dropdown-toggle player-class" data-bs-toggle="dropdown" aria-expanded="false"  data-player-id-2="{{ player.pk }}">
+                                                                        {{ player.get_class }}
+                                                                    </a>
+                                                            {% else %}
+                                                                <a href="#" class="btn btn-link dropdown-toggle player-class" data-bs-toggle="dropdown" aria-expanded="false"  data-player-id-2="{{ player.pk }}" disabled>
+                                                                        {{ player.get_class }}
+                                                                    </a>
+                                                            {% endif %}
+                                                        {% endif %}
+
                                                             <ul class="dropdown-menu">
                                                                 {% for player_class in classes %}
                                                                     {% comment %} <li><a class="dropdown-item" href="#">{{ player_class.0 }}</a></li> {% endcomment %}
@@ -257,6 +328,7 @@
 <script>
     const changeRoomPlayer_URL = "{% url 'ajax_changeRoomPlayer' %}";
     const csrf_token = "{{ csrf_token }}";
+    
     function sendData(obj_dict){
         $.ajax({
             url: changeRoomPlayer_URL,
@@ -333,7 +405,7 @@
             // Уведомление о новом событии
             mkNoti(
                 descriptionElement.textContent,
-                "Манчкин " + data.username + " сменил рассу, теперь он стал " + data.race + "!",
+                data.user + " изменил Манчкину " + data.username + " расу, теперь он стал " + data.race + "!",
                 {status: "info"}
             );
         }
@@ -387,7 +459,7 @@
             // Уведомление о новом событии
             mkNoti(
                 descriptionElement.textContent,
-                "Манчкин " + data.username + " сменил класс, теперь он стал " + data.class + "!",
+                data.user + " изменил Манчкину " + data.username + " класс, теперь он стал " + data.class + "!",
                 {status: "info"}
             );
         }
@@ -449,7 +521,7 @@
             // Уведомление о новом событии
             mkNoti(
                 descriptionElement.textContent,
-                "Манчкин " + data.username + " сменил уровень, теперь он стал " + data.level + "!",
+                data.creator + " сменил Манчкину " + data.username + " уровень, теперь он стал " + data.level + "!",
                 {status: "info"}
             );
         }
@@ -510,7 +582,7 @@
             // Уведомление о новом событии
             mkNoti(
                 descriptionElement.textContent,
-                "Манчкин " + data.username + " сменил мощность, теперь он стал " + data.power + "!",
+                data.creator + " сменил Манчкину " + data.username + " мощность, теперь она стала " + data.power + "!",
                 {status: "info"}
             );
         }
@@ -546,7 +618,7 @@
         // Уведомление о новом событии
         mkNoti(
             "Смена пола",
-            "Манчкин " + data.username + " сменил пол, теперь его пол " + data.gender_display + "!",
+            data.last_request_user + " сменил Манчкину " + data.username + " пол, теперь его пол " + data.gender_display + "!",
             {status: "info"}
         );
 
@@ -716,7 +788,8 @@ function rejectConnectionhtml(connection_id) {
 
     if (data.code == code) {
         console.log(data)
-        addNewPlayer(data)
+        location.reload();
+        {% comment %} addNewPlayer(data) {% endcomment %}
 
     }
 

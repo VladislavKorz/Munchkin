@@ -27,6 +27,7 @@ class Rooms(models.Model):
     owner = models.ForeignKey("users.CustomUser", verbose_name="Владелец комнаты", on_delete=models.SET_NULL, null=True, related_name="roomOwner")
     end = models.BooleanField("Игра завершилась?", default=False)
     only_verified_users = models.BooleanField("Только пользователи с подтверждённой почтой", default=False)
+    change_permission = models.BooleanField(default=False, verbose_name="Игроки могут менять друг другу характеристики")
 
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
@@ -58,6 +59,7 @@ class RoomPlayer(models.Model):
     player = models.ForeignKey("users.CustomUser", verbose_name="Игрок", on_delete=models.SET_NULL, null=True, related_name='roomPlayer')
     order = models.IntegerField("Порядок игроков", default=1)
     gender = models.CharField("Пол", max_length = 1, choices = CustomUser.GENDER_CHOICES, default='O')
+    last_request_user = models.ForeignKey("users.CustomUser", verbose_name="пользователь", on_delete=models.SET_NULL, null=True, related_name='request_user')
 
     update = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     create = models.DateTimeField(verbose_name='Дата старта', auto_now_add=True)
@@ -92,6 +94,7 @@ class PlayerLeavel(models.Model):
     player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='leavel')
     leavel = models.IntegerField("Уровень", default=1)
     create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
+    creator = models.ForeignKey("users.CustomUser", verbose_name="создатель", on_delete=models.SET_NULL, null=True, related_name='created_leavel')
     class Meta:
         ordering = ['-create']
         verbose_name = "Уровень игроков в игре"
@@ -101,6 +104,7 @@ class PlayerPower(models.Model):
     player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='power')
     power = models.IntegerField("Мощность", default=0)
     create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
+    creator = models.ForeignKey("users.CustomUser", verbose_name="создатель", on_delete=models.SET_NULL, null=True, related_name='created_power')
     class Meta:
         ordering = ['-create']
         verbose_name = "Мощность игроков в игре"
@@ -112,10 +116,16 @@ class PlayerClass(models.Model):
         ('M', 'Волшебник'),
         ('T', 'Вор'),
         ('C', 'Клирик'),
+        ('WM', r'Воин+Волшебник'),
+        ('WT', r'Воин+Вор'),
+        ('WC', r'Воин+Клирик'),
+        ('MT', r'Волшебник+Вор'),
+        ('MC', r'Волшебник+Клирик'),
+        ('TC', r'Вор+Клирик'),
     )
 
     player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='playerClass')
-    value = models.CharField("Класс", max_length = 1, choices = CLASS_CHOICES, default='N')
+    value = models.CharField("Класс", max_length = 2, choices = CLASS_CHOICES, default='N')
     create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     class Meta:
         ordering = ['-pk']
@@ -127,9 +137,15 @@ class PlayerRace(models.Model):
         ('W', 'Эльф'),
         ('M', 'Дварф'),
         ('T', 'Хафлингом'),
+        ('HW', r'Человек+Эльф'),
+        ('HM', r'Человек+Дварф'),
+        ('HT', r'Человек+Хафлингом'),
+        ('WM', r'Эльф+Дварф'),
+        ('WT', r'Эльф+Хафлингом'),
+        ('MT', r'Дварф+Хафлингом'),
     )
     player = models.ForeignKey("room.RoomPlayer", verbose_name="Игрок", on_delete=models.CASCADE, null=True, related_name='playerRace')
-    value = models.CharField("Класс", max_length = 1, choices = CLASS_CHOICES, default='H')
+    value = models.CharField("Класс", max_length = 2, choices = CLASS_CHOICES, default='H')
     create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     class Meta:
         ordering = ['-pk']

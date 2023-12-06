@@ -274,3 +274,9 @@ ROOM_PLAYER_GROUP_NAME = 'new_room_player'
 
 
 LOGOUT_REDIRECT_URL = '/login/'  # Указываем путь к вашей собственной странице входа
+
+
+# CELERY
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'

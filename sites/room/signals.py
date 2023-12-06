@@ -14,6 +14,10 @@ from .models import (ConnectionRequest, PlayerLeavel, PlayerPower, RoomPlayer,
 @receiver(post_save, sender=PlayerLeavel)
 def create_player_level(sender, instance, created, **kwargs):
     created_at = instance.create
+    if instance.creator==None:
+        creator = instance.player.player.username
+    else:
+        creator = instance.creator.username
     if created:
         try:
             power = instance.player.get_power()
@@ -23,19 +27,23 @@ def create_player_level(sender, instance, created, **kwargs):
         async_to_sync(channel_layer.group_send)(
             settings.LEVEL_GROUP_NAME, {
                 "type": 'new_level',
-                "content": json.dumps({'level': instance.leavel, 'playerId': instance.player.id, 'power': power, 'username': instance.player.player.username, 'date': created_at.strftime("%d.%m"), 'time': created_at.strftime("%H:%M"), 'room': instance.player.room.code}),
+                "content": json.dumps({'creator': creator, 'level': instance.leavel, 'playerId': instance.player.id, 'power': power, 'username': instance.player.player.username, 'date': created_at.strftime("%d.%m"), 'time': created_at.strftime("%H:%M"), 'room': instance.player.room.code}),
             })
 
 
 @receiver(post_save, sender=PlayerPower)
 def create_player_power(sender, instance, created, **kwargs):
     created_at = instance.create
+    if instance.creator==None:
+        creator = instance.player.player.username
+    else:
+        creator = instance.creator.username
     if created:
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             settings.POWER_GROUP_NAME, {
                 "type": 'new_power',
-                "content": json.dumps({'power': instance.power, 'playerId': instance.player.id, 'level': instance.player.get_leavel(), 'username': instance.player.player.username, 'date': created_at.strftime("%d.%m"), 'time': created_at.strftime("%H:%M"), 'room': instance.player.room.code}),
+                "content": json.dumps({'creator': creator, 'power': instance.power, 'playerId': instance.player.id, 'level': instance.player.get_leavel(), 'username': instance.player.player.username, 'date': created_at.strftime("%d.%m"), 'time': created_at.strftime("%H:%M"), 'room': instance.player.room.code}),
             })
 
 
@@ -49,15 +57,16 @@ def room_player_gender_changed(sender, instance, **kwargs):
             async_to_sync(channel_layer.group_send)(
                 settings.GENDER_GROUP_NAME, {
                     "type": 'new_gender',
-                    "content": json.dumps({'gender': instance.gender, 'playerId': instance.id, 'username': instance.player.username, 'gender_display': instance.get_gender_display()}),
+                    "content": json.dumps({'last_request_user': instance.last_request_user.username, 'gender': instance.gender, 'playerId': instance.id, 'username': instance.player.username, 'gender_display': instance.get_gender_display()}),
                 })
 
 
-@receiver(post_save, sender=Rooms)
+@receiver(pre_save, sender=Rooms)
 def set_unique_code(sender, instance, **kwargs):
     previous = Rooms.objects.filter(id=instance.id).first()
     if previous:
         instance.code = previous.code
+
 
 
 @receiver(post_save, sender=ConnectionRequest)

@@ -16,10 +16,18 @@ from django.views import View
 from loguru import logger
 from room.models import *
 from users.services import *
+from django.views.generic import ListView
+from .models import CustomUser
+from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
+import random
+import string
+from django.contrib.auth.views import LogoutView
 
 from .forms import CustomUserCreationForm, EmailConfirmationForm
 # from .forms import LoginForm, RegisterForm
 from .models import *
+from .tasks import send_email_verification
 
 
 class LoginView(View):
@@ -81,7 +89,7 @@ def register(request):
             from_email = settings.DEFAULT_FROM_EMAIL
             recipient_list = [user.email]
 
-            send_mail(subject, message, from_email, recipient_list)
+            send_email_verification.delay(subject, message, from_email, recipient_list)
 
             return redirect('confirm_email')  # Перенаправляем на страницу профиля
     else:
@@ -234,3 +242,42 @@ def make_qr_connection_request(request, code):
 
         # Перенаправьте пользователя на новую страницу
         return HttpResponseRedirect(url)
+
+
+
+
+
+
+# Ваше приложение/views.py
+def create_guest(request):
+    User = get_user_model()
+
+    # Генерируем рандомную почту и пароль
+    random_email = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8)) + '@guest.com'
+    random_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+    random_username = 'guest-' + ''.join(random.choices(string.ascii_letters + string.digits, k=9))
+
+    # Создаем пользователя
+    user = User.objects.create_user(username=random_username, email=random_email, password=random_password, email_verify=True, guest=True)
+    login(request, user)
+
+    # Редиректим на страницу успешного создания пользователя или куда вам нужно
+    return redirect('profile')  # Замените 'success_page' на ваш URL-путь для страницы успеха
+
+
+
+class CustomLogoutView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        response = super().dispatch(request, *args, **kwargs)
+
+        # Проверяем, является ли пользователь гостем (если это поле guest у юзера True)
+        if user.is_authenticated and hasattr(user, 'guest') and user.guest:
+            User = get_user_model()
+            # Дополнительные действия перед удалением пользователя, если необходимо
+            # ...
+
+            # Удаляем пользователя
+            user.delete()
+
+        return response
