@@ -280,3 +280,25 @@ LOGOUT_REDIRECT_URL = '/login/'  # Указываем путь к вашей с�
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+
+
+# LOGGING
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
